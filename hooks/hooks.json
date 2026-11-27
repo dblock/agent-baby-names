@@ -1,0 +1,16 @@
+{
+  "description": "Names a new session after the project it works on.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hosts/claude/hook.sh\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

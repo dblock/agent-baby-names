@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "hooks": {
+    "userPromptSubmitted": [
+      {
+        "type": "command",
+        "bash": "\"$AGENT_BABY_NAMES_PLUGIN_ROOT/hosts/copilot/hook.sh\"",
+        "env": {
+          "AGENT_BABY_NAMES_PLUGIN_ROOT": "${PLUGIN_ROOT}"
+        },
+        "timeoutSec": 45
+      }
+    ]
+  }
+}

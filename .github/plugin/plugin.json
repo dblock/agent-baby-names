@@ -6,5 +6,6 @@
   "homepage": "https://github.com/dblock/agent-baby-names",
   "repository": "https://github.com/dblock/agent-baby-names",
   "license": "MIT",
-  "keywords": ["session", "name", "title", "hooks"]
+  "keywords": ["session", "name", "title", "hooks"],
+  "hooks": "hooks/copilot.json"
 }

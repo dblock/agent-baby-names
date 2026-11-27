@@ -22,11 +22,13 @@ npm run package
 - `npm run lint` runs [ShellCheck](https://www.shellcheck.net/), downloaded by the `shellcheck` package, on the scripts and tests, and [ESLint](https://eslint.org/) on the Markdown: `@eslint/markdown` and `eslint-plugin-markdown-preferences` for style and Title Case headings, `eslint-plugin-markdown-preferences-paragraph` for one-line paragraphs, `eslint-plugin-markdown-links` for missing local paths and anchors, `eslint-plugin-markdown-links-unlinked` so every page is reachable from the README, and `eslint-plugin-prose-spellcheck` for spelling, with the reviewed vocabulary in `.spellcheck.txt`. Fix misspellings and add only legitimate terms.
 - `npm run package` validates the plugin manifests with `claude plugin validate`.
 
+Measure line coverage with `npm run coverage`. It runs the tests under [kcov](https://github.com/SimonKagstrom/kcov) in the kcov Docker image, because kcov needs a newer Bash than macOS ships, writes an HTML report and `coverage/cobertura.xml` to `coverage/`, and prints each file's coverage. kcov reports continuation lines of multi-line commands and lines of embedded awk programs as missed.
+
 `@eslint/markdown` stays on 8.x because `eslint-plugin-markdown-preferences` and `eslint-plugin-markdown-links` do not support 9.x yet.
 
 ## Tests
 
-Tests live in `test/` and run with Bats against the real scripts in subprocesses. Add tests for new behavior, including errors and edge cases, and keep coverage close to complete. Tests must not reach the network, call a real model, or read your own configuration; point the core at a test configuration and a stub ask command instead.
+Tests live in `test/` and run with Bats against the real scripts in subprocesses. Add tests for new behavior, including errors and edge cases, and keep coverage close to complete. Tests must not reach the network, call a real model, or read your own configuration: `test/test_helper.bash` gives every test a temporary home, configuration, and cache, and puts stub `claude` and `copilot` commands first on `PATH`. To try the plugin in a real host, run `claude --plugin-dir .` or `copilot --plugin-dir .` in a trusted folder.
 
 ## Pull Requests
 

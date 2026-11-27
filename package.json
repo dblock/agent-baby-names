@@ -9,8 +9,9 @@
     "test": "bats test",
     "lint": "npm run lint:markdown && npm run lint:shell",
     "lint:markdown": "eslint .",
-    "lint:shell": "shellcheck bin/agent-baby-names test/*.bats",
-    "package": "claude plugin validate . && claude plugin validate .claude-plugin/marketplace.json"
+    "lint:shell": "shellcheck -x bin/agent-baby-names lib/ask hosts/*/hook.sh strategies/*/strategy.sh scripts/*.sh test/*.bats test/test_helper.bash",
+    "package": "claude plugin validate . && claude plugin validate .claude-plugin/marketplace.json",
+    "coverage": "scripts/coverage.sh"
   },
   "engines": {
     "node": "^22.13.0 || >=24.0.0"
