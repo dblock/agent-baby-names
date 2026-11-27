@@ -30,7 +30,7 @@ Copilot CLI runs plugin hooks only in folders you have trusted.
 
 Start a session and send a prompt. The first prompt of a session without a name gives it one, and later prompts and sessions you have named yourself are left alone.
 
-With the default `repo` strategy, a session is named after the Git repository it runs in, such as `testlanes` for a session in `~/source/testlanes/master`. Combine other strategies for names such as `🧪 testlanes` or `🔊 loud-laptop-fan` that a model helps choose.
+With the default `repo` strategy, a session is named after the Git repository it runs in, such as `hello-world` for a session in `~/source/hello-world/master`. Combine other strategies for names such as `👋 hello-world` or `🔊 loud-laptop-fan` that a model helps choose.
 
 ## Configuration
 
@@ -45,17 +45,16 @@ Configuration is optional and lives in `~/.config/agent-baby-names/config.json`,
 }
 ```
 
-`strategy` is a strategy or a list of strategies, each the name of a bundled strategy or the path to your own. The strategies run in order, and each one gets the name so far and keeps it or changes it, so this example names a session after a checkout, else a topic, and then puts an emoji before the name. `strategies` holds each strategy's options under its name.
+`strategy` is a strategy or a list of strategies, each the name of a built-in strategy below or the path to [your own strategy](docs/strategies/custom.md), any executable that prints a name. The strategies run in order, and each one gets the name so far and keeps it or changes it, so this example names a session after a checkout, else a topic, and then puts an emoji before the name. `strategies` holds each strategy's options under its name.
 
-### Strategies
+### Built-in Strategies
 
 - [`repo`](docs/strategies/repo.md), the default, names a session after the Git repository it runs in.
 - [`git-clones`](docs/strategies/git-clones.md) names a session after a Git checkout that the prompt mentions or that it runs in.
 - [`github-repos`](docs/strategies/github-repos.md) names a session after one of your GitHub repositories that the prompt mentions, or the checkout it runs in.
 - [`topic`](docs/strategies/topic.md) names a session after a short topic that a model writes from the prompt.
-- [`emoji`](docs/strategies/emoji.md) puts an emoji before the name, such as `🧪 testlanes`.
+- [`emoji`](docs/strategies/emoji.md) puts an emoji before the name, such as `👋 hello-world`.
 - [`directory`](docs/strategies/directory.md) names a session after the folder it runs in.
-- [Your own strategy](docs/strategies/custom.md) is any executable that prints a name.
 
 ## Contributing
 

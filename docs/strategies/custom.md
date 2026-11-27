@@ -19,4 +19,14 @@ It reads `{"prompt", "cwd", "host", "name"}` JSON on standard input, where `host
 jq -r 'select(.name == "") | .prompt' | tr -s '[:space:]' ' ' | cut -d' ' -f1-3
 ```
 
+## Examples
+
+With that script saved as `~/bin/name-session`:
+
+| Prompt                     | Name so far   | Name            |
+| -------------------------- | ------------- | --------------- |
+| "fix the flaky login test" | none          | `fix the flaky` |
+| "fix the flaky login test" | `hello-world` | `hello-world`   |
+| An empty prompt            | none          | none            |
+
 See the [directory strategy](../../strategies/directory/strategy.sh) for an example that reads its options.

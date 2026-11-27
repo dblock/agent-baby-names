@@ -6,7 +6,7 @@ source "$BATS_TEST_DIRNAME/test_helper.bash"
 setup() {
   common_setup
   strategy="$root/strategies/emoji/strategy.sh"
-  printf 'testlanes 🧪\n' >"$tmp/pins.txt"
+  printf 'hello-world 🧪\n' >"$tmp/pins.txt"
   # A fake model that records each question and answers with EMOJI.
   script "$tmp/ask" <<'ASK'
 #!/bin/bash
@@ -27,7 +27,7 @@ asked() {
 }
 
 @test "a pinned emoji skips the model" {
-  [ "$(name testlanes)" = "🧪 testlanes" ]
+  [ "$(name hello-world)" = "🧪 hello-world" ]
   [ "$(asked)" = 0 ]
 }
 
@@ -41,7 +41,7 @@ asked() {
 }
 
 @test "an invalid model emoji falls back and is not cached" {
-  [ "$(EMOJI="not an emoji" name excalc)" = "💬 excalc" ]
+  [ "$(EMOJI="not an emoji" name gizmo)" = "💬 gizmo" ]
   [ ! -s "$tmp/strategy-cache/emojis.txt" ]
 }
 
@@ -56,11 +56,11 @@ asked() {
 }
 
 @test "ask none gives the default emoji" {
-  [ "$(name excalc "$(jq -c '.ask = "none"' <<<"$options")")" = "💬 excalc" ]
+  [ "$(name gizmo "$(jq -c '.ask = "none"' <<<"$options")")" = "💬 gizmo" ]
 }
 
 @test "the bundled pins and the XDG cache apply by default" {
   [ "$(name dotfiles "{\"ask\": \"$tmp/ask\"}")" = "🏠 dotfiles" ]
-  [ "$(name excalc "{\"ask\": \"$tmp/ask\"}")" = "🦀 excalc" ]
-  grep -qxF "excalc 🦀" "$XDG_CACHE_HOME/agent-baby-names/emojis.txt"
+  [ "$(name gizmo "{\"ask\": \"$tmp/ask\"}")" = "🦀 gizmo" ]
+  grep -qxF "gizmo 🦀" "$XDG_CACHE_HOME/agent-baby-names/emojis.txt"
 }
