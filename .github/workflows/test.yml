@@ -20,9 +20,9 @@ jobs:
       fail-fast: false
       matrix:
         entry:
-          - { os: ubuntu-24.04 }
-          - { os: macos-15 }
-          - { os: windows-2025 }
+          - { os: ubuntu-24.04, test: test }
+          - { os: macos-15, test: test }
+          - { os: windows-2025, test: 'coverage:windows' }
     defaults:
       run:
         shell: bash
@@ -37,7 +37,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Run Tests
-        run: npm test
+        run: npm run ${{ matrix.entry.test }}
   coverage:
     name: Coverage
     runs-on: ubuntu-24.04

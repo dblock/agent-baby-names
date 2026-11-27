@@ -17,7 +17,8 @@
     "lint:spelling": "cspell --no-progress",
     "package": "claude plugin validate .",
     "build": "scripts/build.sh",
-    "coverage": "scripts/coverage.sh"
+    "coverage": "scripts/coverage.sh",
+    "coverage:windows": "bash scripts/windows-coverage.sh"
   },
   "engines": {
     "node": "^22.13.0 || >=24.0.0"
