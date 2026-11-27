@@ -6,7 +6,7 @@ Agent Baby Names is a plugin for Claude Code and GitHub Copilot CLI that names a
 
 - **Host adapters** (`hosts/claude`, `hosts/copilot`) are the hooks each host runs. They read the host's hook input, leave sessions that already have a name alone, ask the core for a name, and reply in the host's format.
 - **The core** (`bin/agent-baby-names`) reads the configuration, runs the selected strategy, and prints the name it returns.
-- **Strategies** (`strategies/<name>`) decide the name. A strategy is any executable that reads `{"prompt", "cwd", "host"}` JSON on standard input, receives its own options as JSON in `AGENT_BABY_NAMES_OPTIONS`, and prints one name, or nothing to leave the session unnamed. `project-emoji`, the default, names a session `<emoji> <project>`; `directory` is a minimal example that uses the folder name.
+- **Strategies** (`strategies/<name>`) decide the name. A strategy is any executable that reads `{"prompt", "cwd", "host"}` JSON on standard input, receives its own options as JSON in `AGENT_BABY_NAMES_OPTIONS`, and prints one name, or nothing to leave the session unnamed. `git-clones`, the default, and `github-repos` name a session `<emoji> <repo>` and share `lib/repos`; `directory` is a minimal example that uses the folder name.
 
 ## Configuration
 
@@ -14,9 +14,9 @@ Configuration lives in `~/.config/agent-baby-names/config.json`, under `XDG_CONF
 
 ```json
 {
-  "strategy": "project-emoji",
+  "strategy": "git-clones",
   "strategies": {
-    "project-emoji": { "root": "~/source", "ask": "auto" }
+    "git-clones": { "root": "~/source", "ask": "auto" }
   }
 }
 ```
@@ -41,6 +41,6 @@ A hook never fails a prompt. The core reports configuration and strategy errors 
 
 `lib/ask` asks the host's small model in a subprocess: `claude -p` with hooks, tools, and session saving turned off, or `copilot -p` in a throwaway `COPILOT_HOME` with no tools. It runs in the cache folder with `AGENT_BABY_NAMES_NESTED` set, and the core names nothing while that is set, so the nested session never names itself or recurses.
 
-## Project Emoji
+## Repository Strategies
 
-`project-emoji` caches the project list and rebuilds it when the root folder changes or after a day, so most prompts make no model call. A project's emoji is asked once and cached; pins override the cache. Folders such as `master`, `main`, or `<login>-<repo>` inside a repository folder are checkouts, not projects.
+`git-clones` and `github-repos` differ only in where their list of repository names comes from; `lib/repos` matches the prompt against the list, falls back to the checkout that holds the working directory and then to a topic, and picks emojis. A checkout is named after its `origin` remote, else `upstream`, else its folder, so the clones, forks, and worktrees of one repository share a name without guessing from folder names. `git-clones` reads Git configuration and never uses the network, and rebuilds its list when the root folder changes or after a day. `github-repos` asks `gh`, which takes seconds for hundreds of repositories, so its list is cached for a day, keyed by `owners`, and a failed listing keeps the old one. A repository's emoji is asked once and cached; pins override the cache.

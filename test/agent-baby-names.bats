@@ -92,8 +92,8 @@ STRATEGY
   [ "$stderr" = "agent-baby-names: Strategy \"$tmp/record.sh\" failed with status 3." ]
 }
 
-@test "uses project-emoji without a configuration file" {
-  mkdir -p "$HOME/source/babynames/.git"
+@test "uses git-clones without a configuration file" {
+  clone "$HOME/source/babynames"
   run "$bin" < <(input "name the babynames project")
   [ "$status" -eq 0 ]
   [ "$output" = "🗂️ babynames" ]
@@ -147,7 +147,7 @@ STRATEGY
 }
 
 @test "fails on a configuration that is not a JSON object" {
-  config '["project-emoji"]'
+  config '["git-clones"]'
   run --separate-stderr "$bin" < <(input x)
   [ "$status" -eq 1 ]
   [ "$stderr" = "agent-baby-names: $AGENT_BABY_NAMES_CONFIG is not a JSON object." ]

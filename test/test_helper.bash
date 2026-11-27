@@ -32,6 +32,12 @@ script() {
   chmod +x "$1"
 }
 
+# Creates a Git repository in a folder, with an optional origin remote URL.
+clone() {
+  git -c init.defaultBranch=master init -q "$1"
+  [[ -z "${2:-}" ]] || git -C "$1" remote add origin "$2"
+}
+
 # Prints {"prompt", "cwd"} JSON.
 input() {
   jq -cn --arg prompt "$1" --arg cwd "${2:-/}" '{prompt: $prompt, cwd: $cwd}'
