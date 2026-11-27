@@ -1,0 +1,39 @@
+# Contributing
+
+Read [DESIGN](DESIGN.md) for the intended behavior before changing it.
+
+## Setup and Validation
+
+The plugin itself needs only Bash, [jq](https://jqlang.org/), and Git. Development uses Node.js (the version in `.nvmrc`) for the test and lint tools, which install from `package-lock.json`, plus Claude Code to validate the plugin manifests:
+
+```sh
+npm ci
+```
+
+Run every check before committing and pushing:
+
+```sh
+npm test
+npm run lint
+npm run package
+```
+
+- `npm test` runs the [Bats](https://github.com/bats-core/bats-core) tests.
+- `npm run lint` runs [ShellCheck](https://www.shellcheck.net/), downloaded by the `shellcheck` package, on the scripts and tests, and [ESLint](https://eslint.org/) on the Markdown: `@eslint/markdown` and `eslint-plugin-markdown-preferences` for style and Title Case headings, `eslint-plugin-markdown-preferences-paragraph` for one-line paragraphs, `eslint-plugin-markdown-links` for missing local paths and anchors, `eslint-plugin-markdown-links-unlinked` so every page is reachable from the README, and `eslint-plugin-prose-spellcheck` for spelling, with the reviewed vocabulary in `.spellcheck.txt`. Fix misspellings and add only legitimate terms.
+- `npm run package` validates the plugin manifests with `claude plugin validate`.
+
+`@eslint/markdown` stays on 8.x because `eslint-plugin-markdown-preferences` and `eslint-plugin-markdown-links` do not support 9.x yet.
+
+## Tests
+
+Tests live in `test/` and run with Bats against the real scripts in subprocesses. Add tests for new behavior, including errors and edge cases, and keep coverage close to complete. Tests must not reach the network, call a real model, or read your own configuration; point the core at a test configuration and a stub ask command instead.
+
+## Pull Requests
+
+- Branch as `<github-login>/<topic>`, keep one commit per PR, and stack dependent PRs. Merges are rebase merges only.
+- Update your own PR branches with `git push --force-with-lease`; never force-push `master`.
+- Update the documentation the change affects and add a line under the Next section of the changelog for features, improvements, and fixes, in the form ``- [#123](https://github.com/dblock/agent-baby-names/pull/123): Description - [@login](https://github.com/login).``
+- Use Title Case for Markdown headings and for workflow, job, and step names, and keep Markdown paragraphs on one line.
+- Keep `Test` (Bats on Ubuntu and macOS), `Lint`, and `Package` as separate workflows, with explicit `matrix.entry` combinations and least-privilege permissions.
+
+See [RELEASING](RELEASING.md) for releases.

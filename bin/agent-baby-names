@@ -1,0 +1,23 @@
+#!/bin/bash
+# Names a Claude Code or GitHub Copilot CLI session. Naming is not implemented yet.
+
+set -euo pipefail
+
+VERSION="0.1.0"
+
+usage() {
+  cat <<'USAGE'
+Usage: agent-baby-names [--version] [--help]
+
+Names a Claude Code or GitHub Copilot CLI session. Naming is not implemented yet.
+USAGE
+}
+
+case "${1:-}" in
+  --version) echo "agent-baby-names $VERSION" ;;
+  --help | -h) usage ;;
+  *)
+    usage >&2
+    exit 1
+    ;;
+esac
