@@ -50,6 +50,10 @@ STRATEGY
   [ "$(jq -r .version "$root/.github/plugin/plugin.json")" = "$version" ]
 }
 
+@test "the committed logo matches its generator" {
+  diff <("$root/scripts/logo.sh") "$root/assets/logo.svg"
+}
+
 @test "runs a strategy given by path with its options, the input, and the host" {
   config "{\"strategy\": \"$tmp/record.sh\", \"strategies\": {\"$tmp/record.sh\": {\"greeting\": \"hi\"}}}"
   NAME='🍼 baby' run "$bin" --host claude < <(input "hello there" /work)

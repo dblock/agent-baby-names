@@ -6,6 +6,8 @@ dblock
 getpath
 gsub
 kcov
+linecap
+linejoin
 mcps
 mmin
 newproject

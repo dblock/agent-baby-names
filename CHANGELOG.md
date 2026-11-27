@@ -16,4 +16,5 @@
 - [#14](https://github.com/dblock/agent-baby-names/pull/14): Add an Examples heading above the demo videos in the README - [@dblock](https://github.com/dblock).
 - [#15](https://github.com/dblock/agent-baby-names/pull/15): Add a `prompt` strategy that asks a model a question you write as a template, and can change the name so far - [@dblock](https://github.com/dblock).
 - [#16](https://github.com/dblock/agent-baby-names/pull/16): Install from the `dblock` marketplace in dblock/agent-marketplace as `agent-baby-names@dblock`, and drop the repository's own marketplace - [@dblock](https://github.com/dblock).
+- [#17](https://github.com/dblock/agent-baby-names/pull/17): Add a logo - [@dblock](https://github.com/dblock).
 - Your contribution here.

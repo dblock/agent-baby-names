@@ -46,6 +46,10 @@ A hook never fails a prompt. The core reports configuration and strategy errors 
 
 `lib/ask` asks the host's small model in a subprocess: `claude -p` with hooks, tools, and session saving turned off, or `copilot -p` in a throwaway `COPILOT_HOME` with no tools. It runs in the cache folder with `AGENT_BABY_NAMES_NESTED` set, and the core names nothing while that is set, so the nested session never names itself or recurses.
 
+## Logo
+
+The logo in `assets/logo.svg` is a baby's head whose face is a `> _` prompt, drawn for this project. `scripts/logo.sh` prints it, so regenerate it with `scripts/logo.sh >assets/logo.svg`; a test checks that the two match. A `prefers-color-scheme: dark` style lightens the head and darkens the prompt so it stays visible on dark backgrounds.
+
 ## Repository Strategies
 
 `git-clone` and `github-repo` differ only in where their list of repository names comes from; `lib/repos` matches the prompt against the list and falls back to the checkout that holds the working directory. A checkout is named after its `origin` remote, else `upstream`, else its folder, so the clones, forks, and worktrees of one repository share a name without guessing from folder names. `git-clone` reads Git configuration and never uses the network, and rebuilds its list when the root folder changes or after a day. `github-repo` asks `gh`, which takes seconds for hundreds of repositories, so its list is cached for a day, keyed by `owners`, and a failed listing keeps the old one. `emoji` asks for a name's emoji once and caches it by the lowercase-hyphenated name; pins override the cache.
