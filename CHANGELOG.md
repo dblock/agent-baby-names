@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (Next)
+## 0.1.0 (2026/11/27)
 
 - [#2](https://github.com/dblock/agent-baby-names/pull/2): Name new Claude Code and Copilot CLI sessions with the configurable `project-emoji` and `directory` strategies - [@dblock](https://github.com/dblock).
 - [#3](https://github.com/dblock/agent-baby-names/pull/3): Check spelling in the scripts with CSpell and run a standalone ShellCheck - [@dblock](https://github.com/dblock).
@@ -21,4 +21,3 @@
 - [#19](https://github.com/dblock/agent-baby-names/pull/19): Link the introductory blog post from the README - [@dblock](https://github.com/dblock).
 - [#20](https://github.com/dblock/agent-baby-names/pull/20): Support Windows in Git Bash - [@dblock](https://github.com/dblock).
 - [#21](https://github.com/dblock/agent-baby-names/pull/21): Release with npm-package-release as a GitHub Release - [@dblock](https://github.com/dblock).
-- Your contribution here.
