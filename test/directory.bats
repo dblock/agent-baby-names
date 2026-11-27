@@ -24,3 +24,8 @@ setup() {
   run "$strategy" < <(input x /)
   [ -z "$output" ]
 }
+
+@test "keeps a name it is given" {
+  run "$strategy" <<<'{"prompt": "x", "cwd": "/work/my-folder", "name": "given"}'
+  [ -z "$output" ]
+}

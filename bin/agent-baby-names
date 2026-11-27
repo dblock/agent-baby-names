@@ -1,5 +1,5 @@
 #!/bin/bash
-# Prints a name for an agent session from {"prompt", "cwd"} JSON on standard input, using the configured strategy.
+# Prints a name for an agent session from {"prompt", "cwd"} JSON on standard input, using the configured strategies.
 set -uo pipefail
 
 VERSION="0.1.0"
@@ -10,7 +10,7 @@ usage() {
 Usage: agent-baby-names [--host <host>] < input.json
        agent-baby-names --version | --help
 
-Prints a name for an agent session from {"prompt", "cwd"} JSON on standard input, using the strategy
+Prints a name for an agent session from {"prompt", "cwd"} JSON on standard input, using the strategies
 configured in ~/.config/agent-baby-names/config.json, or in the file that AGENT_BABY_NAMES_CONFIG names.
 
 Options:
@@ -51,24 +51,39 @@ if [[ -f "$config_file" ]]; then
     fail "$config_file is not a JSON object."
 fi
 
-strategy="$(jq -r '.strategy // "repo" | tostring' <<<"$config")"
-options="$(jq -ce --arg s "$strategy" '(.strategies // {})[$s] // {} | if type == "object" then . else error end' \
-  <<<"$config" 2>/dev/null)" || fail "The options of strategy \"$strategy\" in $config_file must be an object."
-
-case "$strategy" in
-  */*) executable="${strategy/#\~/$HOME}" ;;
-  "" | *[!abcdefghijklmnopqrstuvwxyz0123456789-]*) executable="" ;;
-  *) executable="$root/strategies/$strategy/strategy.sh" ;;
-esac
-[[ -n "$executable" && -f "$executable" && -x "$executable" ]] || fail "Unknown strategy \"$strategy\"."
+# The strategy is one strategy or a list of them, each checked before any runs.
+strategies=()
+executables=()
+options=()
+while IFS= read -r strategy; do
+  strategy_options="$(jq -ce --arg s "$strategy" \
+    '(.strategies // {})[$s] // {} | if type == "object" then . else error end' <<<"$config" 2>/dev/null)" ||
+    fail "The options of strategy \"$strategy\" in $config_file must be an object."
+  case "$strategy" in
+    */*) executable="${strategy/#\~/$HOME}" ;;
+    "" | *[!abcdefghijklmnopqrstuvwxyz0123456789-]*) executable="" ;;
+    *) executable="$root/strategies/$strategy/strategy.sh" ;;
+  esac
+  [[ -n "$executable" && -f "$executable" && -x "$executable" ]] || fail "Unknown strategy \"$strategy\"."
+  strategies+=("$strategy")
+  executables+=("$executable")
+  options+=("$strategy_options")
+done < <(jq -r '.strategy // "repo" | if type == "array" then .[] else . end | tostring' <<<"$config")
+[[ ${#strategies[@]} -gt 0 ]] || fail "The strategy list in $config_file is empty."
 
 input="$(jq -ce --arg host "$host" '{prompt: (.prompt // ""), cwd: (.cwd // ""), host: $host}' 2>/dev/null)" ||
   fail "The input must be a JSON object."
 
-name="$(AGENT_BABY_NAMES_OPTIONS="$options" AGENT_BABY_NAMES_HOST="$host" AGENT_BABY_NAMES_ROOT="$root" \
-  "$executable" <<<"$input")"
-status=$?
-[[ $status -eq 0 ]] || fail "Strategy \"$strategy\" failed with status $status."
+# Each strategy gets the name so far and prints a new name, or nothing to keep it.
+name=""
+for i in "${!strategies[@]}"; do
+  output="$(jq -c --arg name "$name" '. + {name: $name}' <<<"$input" |
+    AGENT_BABY_NAMES_OPTIONS="${options[$i]}" AGENT_BABY_NAMES_HOST="$host" AGENT_BABY_NAMES_ROOT="$root" \
+      "${executables[$i]}")"
+  status=$?
+  [[ $status -eq 0 ]] || fail "Strategy \"${strategies[$i]}\" failed with status $status."
+  output="$(head -1 <<<"$output" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')"
+  [[ -z "$output" ]] || name="$output"
+done
 
-name="$(head -1 <<<"$name" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')"
 [[ -z "$name" ]] || echo "$name"

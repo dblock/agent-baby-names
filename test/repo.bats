@@ -53,3 +53,9 @@ setup() {
   run "$strategy" < <(input x "$HOME")
   [ -z "$output" ]
 }
+
+@test "keeps a name it is given" {
+  clone "$tmp/foo" https://github.com/dblock/foo.git
+  run "$strategy" <<<"{\"prompt\": \"x\", \"cwd\": \"$tmp/foo\", \"name\": \"given\"}"
+  [ -z "$output" ]
+}

@@ -1,0 +1,41 @@
+# shellcheck shell=bash
+# Shared by the bundled strategies that source it: reads the {"prompt", "cwd", "host", "name"} input and the options,
+# and asks the host's model.
+#
+# Options shared by the strategies that source this file, all optional:
+#   cache  the cache folder (default ~/.cache/agent-baby-names)
+#   ask    the model to ask: auto, none, or a command (default auto, the host's small model)
+#   claude_model   the model that auto asks in Claude Code (default haiku)
+#   copilot_model  the model that auto asks in GitHub Copilot CLI (default claude-haiku-4.5)
+
+lib_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+options="${AGENT_BABY_NAMES_OPTIONS:-}"
+[[ -n "$options" ]] || options="{}"
+
+option() {
+  local value
+  value="$(jq -r --arg k "$1" '.[$k] // empty | tostring' <<<"$options" 2>/dev/null)"
+  value="${value:-$2}"
+  [[ "${3:-}" == path ]] && value="${value/#\~/$HOME}"
+  echo "$value"
+}
+
+cache_dir="$(option cache "${XDG_CACHE_HOME:-$HOME/.cache}/agent-baby-names" path)"
+
+input="$(cat)"
+# shellcheck disable=SC2034 # The strategies that source this file read these.
+prompt="$(jq -r '.prompt // empty' <<<"$input")" cwd="$(jq -r '.cwd // empty' <<<"$input")" \
+  name="$(jq -r '.name // empty' <<<"$input")"
+mkdir -p "$cache_dir" || exit 1
+
+# Lowercase words joined by hyphens, such as mongoid-fulltext for mongoid_fulltext.
+slug() {
+  tr '[:upper:]' '[:lower:]' <<<"$1" | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'
+}
+
+ask_model() {
+  AGENT_BABY_NAMES_CACHE="$cache_dir" AGENT_BABY_NAMES_CLAUDE_MODEL="$(option claude_model haiku)" \
+    AGENT_BABY_NAMES_COPILOT_MODEL="$(option copilot_model claude-haiku-4.5)" "$lib_dir/ask" "$(option ask auto)" \
+    <<<"$1"
+}

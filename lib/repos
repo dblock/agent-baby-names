@@ -1,53 +1,13 @@
 # shellcheck shell=bash
-# Names a session "<emoji> <repo>" for the git-clones and github-repos strategies. A strategy sources this file,
+# Names a session after a repository, for the git-clones and github-repos strategies. A strategy sources this file,
 # defines list_repos to print repository names, one per line, and calls name_session with the name of its cache file.
 #
 # The repository is the longest listed name that the prompt mentions, else the Git checkout that holds the working
-# directory, else a short topic that a model writes from the prompt. Names are lowercase words joined by hyphens.
-# Emojis come from the pins file, else the cache, else the model, whose pick is cached. The repository list is cached
-# for a day; a strategy may define list_stale to rebuild it sooner.
-#
-# Options shared by both strategies, all optional:
-#   pins   a file of "<repo> <emoji>" lines that override cached emojis (default emojis.txt next to this file)
-#   cache  the cache folder (default ~/.cache/agent-baby-names)
-#   ask    the model to ask: auto, none, or a command (default auto, the host's small model)
-#   claude_model   the model that auto asks in Claude Code (default haiku)
-#   copilot_model  the model that auto asks in GitHub Copilot CLI (default claude-haiku-4.5)
+# directory. Names are lowercase words joined by hyphens. A session that already has a name keeps it. The repository
+# list is cached for a day; a strategy may define list_stale to rebuild it sooner. The cache option is in lib/strategy.
 
-lib_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-options="${AGENT_BABY_NAMES_OPTIONS:-}"
-[[ -n "$options" ]] || options="{}"
-
-option() {
-  local value
-  value="$(jq -r --arg k "$1" '.[$k] // empty | tostring' <<<"$options" 2>/dev/null)"
-  value="${value:-$2}"
-  [[ "${3:-}" == path ]] && value="${value/#\~/$HOME}"
-  echo "$value"
-}
-
-pins_file="$(option pins "$lib_dir/emojis.txt" path)"
-cache_dir="$(option cache "${XDG_CACHE_HOME:-$HOME/.cache}/agent-baby-names" path)"
-ask="$(option ask auto)"
-claude_model="$(option claude_model haiku)"
-copilot_model="$(option copilot_model claude-haiku-4.5)"
-emojis_cache="$cache_dir/emojis.txt"
-
-input="$(cat)"
-prompt="$(jq -r '.prompt // empty' <<<"$input")"
-cwd="$(jq -r '.cwd // empty' <<<"$input")"
-mkdir -p "$cache_dir" || exit 1
-
-# Lowercase words joined by hyphens, such as mongoid-fulltext for mongoid_fulltext.
-slug() {
-  tr '[:upper:]' '[:lower:]' <<<"$1" | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'
-}
-
-ask_model() {
-  AGENT_BABY_NAMES_CACHE="$cache_dir" AGENT_BABY_NAMES_CLAUDE_MODEL="$claude_model" \
-    AGENT_BABY_NAMES_COPILOT_MODEL="$copilot_model" "$lib_dir/ask" "$ask" <<<"$1"
-}
+# shellcheck source=lib/strategy
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/strategy"
 
 # The repository a Git checkout belongs to: the last part of its origin, else upstream, remote URL, else its folder.
 repo_name() {
@@ -100,44 +60,11 @@ repo_in_cwd() {
   repo_name "$top"
 }
 
-# One emoji without letters or spaces, or nothing.
-valid_emoji() {
-  [[ -n "$1" && ${#1} -le 8 && "$1" != *[[:alnum:][:space:]]* ]]
-}
-
-lookup() {
-  [[ -f "$2" ]] && awk -v p="$1" '$1 == p { print $2; exit }' "$2"
-}
-
-emoji_for() {
-  local name="$1" emoji
-  emoji="$(lookup "$name" "$pins_file")"
-  [[ -z "$emoji" ]] && emoji="$(lookup "$name" "$emojis_cache")"
-  if [[ -z "$emoji" ]]; then
-    emoji="$(ask_model "Reply with one emoji that fits a software project named \"$name\". Output only the emoji.")"
-    emoji="${emoji//[[:space:]]/}"
-    valid_emoji "$emoji" && echo "$name $emoji" >>"$emojis_cache"
-  fi
-  valid_emoji "$emoji" || emoji="🗂️"
-  echo "$emoji"
-}
-
-# Prints the session name, given the name of the strategy's cache file.
+# Prints the repository's name, given the name of the strategy's cache file, unless the session already has a name.
 name_session() {
-  local repo name reply emoji
+  local repo
+  [[ -z "$name" ]] || return 0
   repo="$(repos "$1" | repo_in_prompt)"
   [[ -z "$repo" ]] && repo="$(repo_in_cwd)"
-  name="$(slug "$repo")"
-  if [[ -n "$name" ]]; then
-    echo "$(emoji_for "$name") $name"
-    return 0
-  fi
-  [[ -n "$prompt" ]] || return 0
-  reply="$(ask_model "Write a session title for this request: \"${prompt:0:1000}\". Rules: lowercase words joined by hyphens, 2 to 4 words, no punctuation. On one line output one fitting emoji, a space, then the title. Output nothing else.")"
-  [[ "$reply" == *" "* ]] || return 0
-  emoji="${reply%% *}"
-  name="$(slug "${reply#* }")"
-  [[ -n "$name" ]] || return 0
-  valid_emoji "$emoji" || emoji="💬"
-  echo "$emoji $name"
+  slug "$repo"
 }

@@ -9,7 +9,7 @@
     "test": "bats test",
     "lint": "npm run lint:markdown && npm run lint:shell && npm run lint:spelling",
     "lint:markdown": "eslint .",
-    "lint:shell": "shellcheck -x bin/agent-baby-names lib/ask lib/repos hosts/*/hook.sh strategies/*/strategy.sh scripts/*.sh test/*.bats test/test_helper.bash",
+    "lint:shell": "shellcheck -x bin/agent-baby-names lib/ask lib/repos lib/strategy hosts/*/hook.sh strategies/*/strategy.sh scripts/*.sh test/*.bats test/test_helper.bash",
     "lint:spelling": "cspell --no-progress",
     "package": "claude plugin validate . && claude plugin validate .claude-plugin/marketplace.json",
     "coverage": "scripts/coverage.sh"
