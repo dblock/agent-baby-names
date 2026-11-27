@@ -25,7 +25,8 @@ export default [
       ...preferences.configs.standard.rules,
       "markdown/no-duplicate-headings": "error",
       "markdown/no-bare-urls": "error",
-      "markdown/no-html": ["error", { allowed: ["img"] }],
+      // sub sets the small captions under the README videos.
+      "markdown/no-html": ["error", { allowed: ["img", "sub"] }],
       "markdown-preferences/no-heading-trailing-punctuation": "error",
       "markdown-preferences/heading-casing": ["error", {
         style: "Title Case",

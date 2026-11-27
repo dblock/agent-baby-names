@@ -32,6 +32,14 @@ Start a session and send a prompt. The first prompt of a session without a name 
 
 With the default `repo` strategy, a session is named after the Git repository it runs in, such as `hello-world` for a session in `~/source/hello-world/master`. Combine other strategies for names such as `👋 hello-world` or `🔊 loud-laptop-fan` that a model helps choose.
 
+<https://github.com/user-attachments/assets/a650ddbc-4070-443d-9946-073782ed6852>
+
+<sub>Claude Code with `["git-clones", "topic", "emoji"]`: each prompt names a checkout, which becomes the session's name with an emoji.</sub>
+
+<https://github.com/user-attachments/assets/18a7e7e6-b3e5-4364-b250-1a5111a56ed8>
+
+<sub>Copilot CLI with `["git-clones", "topic", "emoji"]`: each new session renames itself, then starts on its prompt.</sub>
+
 ## Configuration
 
 Configuration is optional and lives in `~/.config/agent-baby-names/config.json`, or under `XDG_CONFIG_HOME` when it is set. Set `AGENT_BABY_NAMES_CONFIG` to use another file.
