@@ -11,7 +11,7 @@
     "lint:markdown": "eslint .",
     "lint:shell": "shellcheck -x bin/agent-baby-names lib/ask lib/repos lib/strategy hosts/*/hook.sh strategies/*/strategy.sh scripts/*.sh test/*.bats test/test_helper.bash",
     "lint:spelling": "cspell --no-progress",
-    "package": "claude plugin validate . && claude plugin validate .claude-plugin/marketplace.json",
+    "package": "claude plugin validate .",
     "coverage": "scripts/coverage.sh"
   },
   "engines": {
