@@ -1,5 +1,5 @@
 # shellcheck shell=bash
-# Names a session after a repository, for the git-clones and github-repos strategies. A strategy sources this file,
+# Names a session after a repository, for the git-clone and github-repo strategies. A strategy sources this file,
 # defines list_repos to print repository names, one per line, and calls name_session with the name of its cache file.
 #
 # The repository is the longest listed name that the prompt mentions, else the Git checkout that holds the working

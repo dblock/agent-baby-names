@@ -38,4 +38,4 @@ list_stale() {
   [[ "$root" -nt "$1" ]]
 }
 
-name_session git-clones.txt
+name_session git-clone.txt

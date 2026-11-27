@@ -1,12 +1,12 @@
-# Git Clones
+# Git Clone
 
-`git-clones` names a session after a Git checkout that the prompt mentions, such as `hello-world` for "speed up the hello-world CI", or else the checkout it runs in.
+`git-clone` names a session after a Git checkout that the prompt mentions, such as `hello-world` for "speed up the hello-world CI", or else the checkout it runs in.
 
 ```json
 {
-  "strategy": "git-clones",
+  "strategy": "git-clone",
   "strategies": {
-    "git-clones": { "root": "~/code" }
+    "git-clone": { "root": "~/code" }
   }
 }
 ```
@@ -29,7 +29,7 @@ With checkouts of `hello-world`, `dotfiles`, and `acme_widgets` in `~/source`:
 
 ## Options
 
-| Option  | Default                     | Description                                                                                                                                                                                                                        |
-| ------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `root`  | `~/source`                  | Where checkouts live.                                                                                                                                                                                                              |
-| `cache` | `~/.cache/agent-baby-names` | The folder for `git-clones.txt`, the list of checkouts, which can be shared with other strategies. The list is rebuilt after a day, or sooner when a folder is added to or removed from `root`; delete the file to rebuild it now. |
+| Option  | Default                     | Description                                                                                                                                                                                                                       |
+| ------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `root`  | `~/source`                  | Where checkouts live.                                                                                                                                                                                                             |
+| `cache` | `~/.cache/agent-baby-names` | The folder for `git-clone.txt`, the list of checkouts, which can be shared with other strategies. The list is rebuilt after a day, or sooner when a folder is added to or removed from `root`; delete the file to rebuild it now. |

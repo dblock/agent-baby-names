@@ -26,4 +26,4 @@ list_repos() {
 }
 
 key="$(slug "$owners")"
-name_session "github-repos${key:+-$key}.txt"
+name_session "github-repo${key:+-$key}.txt"

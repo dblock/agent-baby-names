@@ -6,7 +6,7 @@ Read [CONTRIBUTING](CONTRIBUTING.md) and [DESIGN](DESIGN.md) first.
 
 Agent Baby Names is a Claude Code and GitHub Copilot CLI plugin that names a new session on its first prompt, with a configurable naming strategy. Non-goals: other agents, renaming sessions that already have a name, and plugin settings screens.
 
-- `bin/agent-baby-names` is the core; `hosts/` holds the per-host hooks, `strategies/` the bundled strategies, `lib/strategy` the input, options, and model helpers that the bundled strategies share, `lib/repos` the code that the `git-clones` and `github-repos` strategies share, and `lib/ask` the helper that asks a host's model.
+- `bin/agent-baby-names` is the core; `hosts/` holds the per-host hooks, `strategies/` the bundled strategies, `lib/strategy` the input, options, and model helpers that the bundled strategies share, `lib/repos` the code that the `git-clone` and `github-repo` strategies share, and `lib/ask` the helper that asks a host's model.
 - `hooks/hooks.json` registers the Claude Code hook and `hooks/copilot.json` the Copilot CLI hook.
 - `.claude-plugin/` holds the Claude Code manifest and marketplace, and `.github/plugin/` the Copilot CLI manifest.
 - `test/` holds the Bats tests. The test and lint tools are npm development dependencies, apart from ShellCheck, which is installed on its own; the plugin itself never needs Node.js.

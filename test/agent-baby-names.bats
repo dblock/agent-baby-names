@@ -199,7 +199,7 @@ STRATEGY
 }
 
 @test "fails on a configuration that is not a JSON object" {
-  config '["git-clones"]'
+  config '["git-clone"]'
   run --separate-stderr "$bin" < <(input x)
   [ "$status" -eq 1 ]
   [ "$stderr" = "agent-baby-names: $AGENT_BABY_NAMES_CONFIG is not a JSON object." ]

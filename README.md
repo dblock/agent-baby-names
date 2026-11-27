@@ -34,11 +34,11 @@ With the default `repo` strategy, a session is named after the Git repository it
 
 <https://github.com/user-attachments/assets/a650ddbc-4070-443d-9946-073782ed6852>
 
-<sub>Claude Code with `["git-clones", "topic", "emoji"]`: each prompt names a checkout, which becomes the session's name with an emoji.</sub>
+<sub>Claude Code with `["git-clone", "topic", "emoji"]`: each prompt names a checkout, which becomes the session's name with an emoji.</sub>
 
 <https://github.com/user-attachments/assets/18a7e7e6-b3e5-4364-b250-1a5111a56ed8>
 
-<sub>Copilot CLI with `["git-clones", "topic", "emoji"]`: each new session renames itself, then starts on its prompt.</sub>
+<sub>Copilot CLI with `["git-clone", "topic", "emoji"]`: each new session renames itself, then starts on its prompt.</sub>
 
 ## Configuration
 
@@ -46,9 +46,9 @@ Configuration is optional and lives in `~/.config/agent-baby-names/config.json`,
 
 ```json
 {
-  "strategy": ["git-clones", "topic", "emoji"],
+  "strategy": ["git-clone", "topic", "emoji"],
   "strategies": {
-    "git-clones": { "root": "~/code" }
+    "git-clone": { "root": "~/code" }
   }
 }
 ```
@@ -58,8 +58,8 @@ Configuration is optional and lives in `~/.config/agent-baby-names/config.json`,
 ### Built-in Strategies
 
 - [`repo`](docs/strategies/repo.md), the default, names a session after the Git repository it runs in.
-- [`git-clones`](docs/strategies/git-clones.md) names a session after a Git checkout that the prompt mentions or that it runs in.
-- [`github-repos`](docs/strategies/github-repos.md) names a session after one of your GitHub repositories that the prompt mentions, or the checkout it runs in.
+- [`git-clone`](docs/strategies/git-clone.md) names a session after a Git checkout that the prompt mentions or that it runs in.
+- [`github-repo`](docs/strategies/github-repo.md) names a session after one of your GitHub repositories that the prompt mentions, or the checkout it runs in.
 - [`topic`](docs/strategies/topic.md) names a session after a short topic that a model writes from the prompt.
 - [`emoji`](docs/strategies/emoji.md) puts an emoji before the name, such as `👋 hello-world`.
 - [`directory`](docs/strategies/directory.md) names a session after the folder it runs in.
