@@ -9,7 +9,7 @@ Agent Baby Names is a Claude Code and GitHub Copilot CLI plugin that names a new
 - `bin/agent-baby-names` is the core; `hosts/` holds the per-host hooks, `strategies/` the bundled strategies, and `lib/ask` the helper that asks a host's model.
 - `hooks/hooks.json` registers the Claude Code hook and `hooks/copilot.json` the Copilot CLI hook.
 - `.claude-plugin/` holds the Claude Code manifest and marketplace, and `.github/plugin/` the Copilot CLI manifest.
-- `test/` holds the Bats tests. The test and lint tools are npm development dependencies; the plugin itself never needs Node.js.
+- `test/` holds the Bats tests. The test and lint tools are npm development dependencies, apart from ShellCheck, which is installed on its own; the plugin itself never needs Node.js.
 
 ## Invariants
 

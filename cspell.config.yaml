@@ -1,0 +1,22 @@
+# Spelling of the scripts and tests, which ESLint cannot parse; ESLint checks the Markdown. Both share .spellcheck.txt.
+version: "0.2"
+language: en-US
+dictionaryDefinitions:
+  - name: project
+    path: ./.spellcheck.txt
+dictionaries: [en_us, softwareTerms, bash, project]
+files:
+  - bin/agent-baby-names
+  - lib/ask
+  - hosts/*/hook.sh
+  - strategies/*/strategy.sh
+  - strategies/*/emojis.txt
+  - scripts/*.sh
+  - test/*.bats
+  - test/test_helper.bash
+languageSettings:
+  - languageId: shellscript
+    dictionaries: [bash]
+overrides:
+  - filename: ["bin/agent-baby-names", "lib/ask", "**/*.bats", "**/*.bash"]
+    languageId: shellscript

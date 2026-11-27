@@ -1,6 +1,17 @@
 CLI
 Node.js
 awk
+babynames
 dblock
+excalc
+fulltext
 kcov
+mcps
+mmin
+mongoid
+newproject
+nojq
+subfolders
 testlanes
+tolower
+tostring

@@ -4,7 +4,7 @@ Read [DESIGN](DESIGN.md) for the intended behavior before changing it.
 
 ## Setup and Validation
 
-The plugin itself needs only Bash, [jq](https://jqlang.org/), and Git. Development uses Node.js (the version in `.nvmrc`) for the test and lint tools, which install from `package-lock.json`, plus Claude Code to validate the plugin manifests:
+The plugin itself needs only Bash, [jq](https://jqlang.org/), and Git. Development uses Node.js (the version in `.nvmrc`) for the test and lint tools, which install from `package-lock.json`, plus [ShellCheck](https://www.shellcheck.net/) on your `PATH` for the shell lint, such as from `brew install shellcheck`, and Claude Code to validate the plugin manifests:
 
 ```sh
 npm ci
@@ -19,7 +19,7 @@ npm run package
 ```
 
 - `npm test` runs the [Bats](https://github.com/bats-core/bats-core) tests.
-- `npm run lint` runs [ShellCheck](https://www.shellcheck.net/), downloaded by the `shellcheck` package, on the scripts and tests, and [ESLint](https://eslint.org/) on the Markdown: `@eslint/markdown` and `eslint-plugin-markdown-preferences` for style and Title Case headings, `eslint-plugin-markdown-preferences-paragraph` for one-line paragraphs, `eslint-plugin-markdown-links` for missing local paths and anchors, `eslint-plugin-markdown-links-unlinked` so every page is reachable from the README, and `eslint-plugin-prose-spellcheck` for spelling, with the reviewed vocabulary in `.spellcheck.txt`. Fix misspellings and add only legitimate terms.
+- `npm run lint` runs [ShellCheck](https://www.shellcheck.net/) on the scripts and tests, [CSpell](https://cspell.org/) for spelling in the scripts and tests, which ESLint cannot parse, and [ESLint](https://eslint.org/) on the Markdown: `@eslint/markdown` and `eslint-plugin-markdown-preferences` for style and Title Case headings, `eslint-plugin-markdown-preferences-paragraph` for one-line paragraphs, `eslint-plugin-markdown-links` for missing local paths and anchors, `eslint-plugin-markdown-links-unlinked` so every page is reachable from the README, and `eslint-plugin-prose-spellcheck` for spelling, with the reviewed vocabulary in `.spellcheck.txt`, which CSpell shares through `cspell.config.yaml`. Fix misspellings and add only legitimate terms. CI installs the ShellCheck release pinned in `lint.yml`; update it when ShellCheck releases.
 - `npm run package` validates the plugin manifests with `claude plugin validate`.
 
 Measure line coverage with `npm run coverage`. It runs the tests under [kcov](https://github.com/SimonKagstrom/kcov) in the kcov Docker image, because kcov needs a newer Bash than macOS ships, writes an HTML report and `coverage/cobertura.xml` to `coverage/`, and prints each file's coverage. kcov reports continuation lines of multi-line commands and lines of embedded awk programs as missed.
