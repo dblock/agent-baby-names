@@ -2,6 +2,7 @@
 
 ## 0.1.1 (Next)
 
+- [#26](https://github.com/dblock/agent-baby-names/pull/26): Update development dependencies and Node.js to 26.13.1 - [@dblock](https://github.com/dblock).
 - Your contribution here.
 
 ## 0.1.0 (2026/11/27)
