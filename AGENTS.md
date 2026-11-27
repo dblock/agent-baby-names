@@ -38,6 +38,7 @@ Keep line coverage of the scripts close to complete; measure it with `npm run co
 
 - Branch as `dblock/<topic>`, keep one commit per PR, stack dependent PRs and register them with `gh stack link`, and use rebase merges only. Never force-push `master`; update your own PR branches with `--force-with-lease`.
 - Add a linked CHANGELOG line under the Next section for each change; predict the PR number from the repository's latest issue or PR and verify it after opening the PR.
+- In documentation, put Examples last, after the description and Options, and add headings only for sections that need them.
 - Use Title Case for Markdown headings and workflow, job, and step names; keep Markdown paragraphs on one line.
 - Prefer current stable releases of tools and GitHub Actions.
 - Include an AI co-author trailer in AI-assisted commits, and disclose AI authorship in PR descriptions and comments.
