@@ -56,7 +56,7 @@ STRATEGY
   NAME='🍼 baby' run "$bin" --host claude < <(input "hello there" /work)
   [ "$status" -eq 0 ]
   [ "$output" = "🍼 baby" ]
-  grep -qxF 'input={"prompt":"hello there","cwd":"/work","host":"claude"}' "$STUB_LOG"
+  grep -qxF 'input={"prompt":"hello there","cwd":"/work","host":"claude","name":""}' "$STUB_LOG"
   grep -qxF 'options={"greeting":"hi"}' "$STUB_LOG"
   grep -qxF 'host=claude' "$STUB_LOG"
   grep -qxF "root=$root" "$STUB_LOG"
@@ -68,7 +68,7 @@ STRATEGY
   NAME='mine' run "$bin" < <(input x)
   [ "$output" = "mine" ]
   grep -qxF 'options={}' "$STUB_LOG"
-  grep -qxF 'input={"prompt":"x","cwd":"/","host":""}' "$STUB_LOG"
+  grep -qxF 'input={"prompt":"x","cwd":"/","host":"","name":""}' "$STUB_LOG"
 }
 
 @test "prints only the first line of the name, trimmed" {
@@ -119,6 +119,58 @@ STRATEGY
   config '{"strategy": "directory", "strategies": {"directory": {"prefix": "👶 "}}}'
   run "$bin" < <(input x /work/my-folder)
   [ "$output" = "👶 my-folder" ]
+}
+
+@test "runs a list of strategies in order, each with the name so far" {
+  script "$tmp/upper.sh" <<'STRATEGY'
+#!/bin/bash
+input="$(cat)"
+echo "upper=$input" >>"$STUB_LOG"
+jq -r '.name | ascii_upcase' <<<"$input"
+STRATEGY
+  config "{\"strategy\": [\"directory\", \"$tmp/record.sh\", \"$tmp/upper.sh\"]}"
+  run "$bin" < <(input x /work/my-folder)
+  [ "$status" -eq 0 ]
+  [ "$output" = "MY-FOLDER" ]
+  grep -qxF 'input={"prompt":"x","cwd":"/work/my-folder","host":"","name":"my-folder"}' "$STUB_LOG"
+  grep -qxF 'upper={"prompt":"x","cwd":"/work/my-folder","host":"","name":"my-folder"}' "$STUB_LOG"
+}
+
+@test "a later strategy gets each strategy's own options" {
+  config "{\"strategy\": [\"directory\", \"$tmp/record.sh\"], \"strategies\": {\"directory\": {\"prefix\": \"👶 \"}, \"$tmp/record.sh\": {\"n\": 1}}}"
+  NAME='  \n' run "$bin" < <(input x /work/my-folder)
+  [ "$output" = "👶 my-folder" ]
+  grep -qxF 'options={"n":1}' "$STUB_LOG"
+}
+
+@test "combines the bundled strategies" {
+  printf 'my-folder 🍼\n' >"$tmp/pins.txt"
+  config "{\"strategy\": [\"repo\", \"topic\", \"emoji\"], \"strategies\": {\"emoji\": {\"pins\": \"$tmp/pins.txt\"}}}"
+  mkdir -p "$tmp/my-folder"
+  run "$bin" < <(input x "$tmp/my-folder")
+  [ "$output" = "🍼 my-folder" ]
+}
+
+@test "checks every strategy before running any" {
+  config "{\"strategy\": [\"$tmp/record.sh\", \"nope\"]}"
+  run --separate-stderr "$bin" < <(input x)
+  [ "$status" -eq 1 ]
+  [ "$stderr" = 'agent-baby-names: Unknown strategy "nope".' ]
+  [ ! -s "$STUB_LOG" ]
+}
+
+@test "stops at a strategy that fails" {
+  config "{\"strategy\": [\"$tmp/record.sh\", \"directory\"]}"
+  STATUS=2 run --separate-stderr "$bin" < <(input x /work/my-folder)
+  [ "$status" -eq 1 ]
+  [ -z "$output" ]
+}
+
+@test "fails on an empty strategy list" {
+  config '{"strategy": []}'
+  run --separate-stderr "$bin" < <(input x)
+  [ "$status" -eq 1 ]
+  [ "$stderr" = "agent-baby-names: The strategy list in $AGENT_BABY_NAMES_CONFIG is empty." ]
 }
 
 @test "fails on an unknown strategy" {

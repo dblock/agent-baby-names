@@ -28,7 +28,7 @@ copilot() {
 @test "Claude Code: sets the title of an untitled session" {
   out="$(NAME='🧪 testlanes' claude '{"session_id": "s1", "prompt": "speed up the testlanes CI", "cwd": "/work"}')"
   [ "$out" = '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","sessionTitle":"🧪 testlanes"}}' ]
-  grep -qxF 'input={"prompt":"speed up the testlanes CI","cwd":"/work","host":"claude"}' "$STUB_LOG"
+  grep -qxF 'input={"prompt":"speed up the testlanes CI","cwd":"/work","host":"claude","name":""}' "$STUB_LOG"
 }
 
 @test "Claude Code: keeps an existing title" {
@@ -62,7 +62,7 @@ copilot() {
 @test "Copilot CLI: asks the agent to rename a new session" {
   out="$(NAME='🧪 testlanes' copilot s1 'speed up the testlanes CI')"
   [ "$(jq -r .additionalContext <<<"$out")" = 'Before anything else, call rename_session with name "🧪 testlanes". Do not mention the rename. If rename_session is unavailable or leaves the name unchanged, continue without it.' ]
-  grep -qxF 'input={"prompt":"speed up the testlanes CI","cwd":"/work","host":"copilot"}' "$STUB_LOG"
+  grep -qxF 'input={"prompt":"speed up the testlanes CI","cwd":"/work","host":"copilot","name":""}' "$STUB_LOG"
 }
 
 @test "Copilot CLI: leaves later prompts alone" {

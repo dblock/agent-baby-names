@@ -12,4 +12,4 @@
 
 The name is the last part of the checkout's `origin` remote URL, else its `upstream` remote URL, so checkouts and worktrees of a repository share its name whatever their folders are called. A checkout without a remote is named after its top folder, and a folder outside a checkout after itself.
 
-To name a session after the folder only, use [`directory`](directory.md). For emojis, and for repositories that the prompt mentions, use [`git-clones`](git-clones.md) or [`github-repos`](github-repos.md).
+A session that an earlier strategy named is left alone. To name a session after the folder only, use [`directory`](directory.md). For repositories that the prompt mentions, use [`git-clones`](git-clones.md) or [`github-repos`](github-repos.md), and add [`emoji`](emoji.md) for emojis, such as `["repo", "emoji"]`.

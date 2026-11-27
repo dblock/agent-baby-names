@@ -1,4 +1,0 @@
-# Pinned emojis for the git-clones and github-repos strategies, one "<repo> <emoji>" per line, using the
-# lowercase-hyphenated repository name. They override emojis that a model picked and cached. Set the pins option to
-# use your own file.
-dotfiles 🏠
