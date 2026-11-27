@@ -1,10 +1,9 @@
 # Changelog
 
-## 0.1.1 (Next)
+## 0.2.0 (2026/11/27)
 
 - [#22](https://github.com/dblock/agent-baby-names/pull/22): Make `["topic", "emoji"]` the default strategy, and remove `git-clone`'s default `root` - [@dblock](https://github.com/dblock).
 - [#25](https://github.com/dblock/agent-baby-names/pull/25): Check that the Windows test job runs the lines that run only in Git Bash - [@dblock](https://github.com/dblock).
-- Your contribution here.
 
 ## 0.1.0 (2026/11/27)
 
