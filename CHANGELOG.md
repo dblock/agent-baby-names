@@ -20,4 +20,5 @@
 - [#18](https://github.com/dblock/agent-baby-names/pull/18): Cancel superseded CI runs on pull requests - [@dblock](https://github.com/dblock).
 - [#19](https://github.com/dblock/agent-baby-names/pull/19): Link the introductory blog post from the README - [@dblock](https://github.com/dblock).
 - [#20](https://github.com/dblock/agent-baby-names/pull/20): Support Windows in Git Bash - [@dblock](https://github.com/dblock).
+- [#21](https://github.com/dblock/agent-baby-names/pull/21): Release with npm-package-release as a GitHub Release - [@dblock](https://github.com/dblock).
 - Your contribution here.

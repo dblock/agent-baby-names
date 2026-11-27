@@ -1,6 +1,7 @@
 CLI
 CONV
 EXCL
+Intridea
 Node.js
 WSL
 awk

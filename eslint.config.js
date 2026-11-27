@@ -7,7 +7,7 @@ import proseSpellcheck from "eslint-plugin-prose-spellcheck";
 
 export default [
   {
-    ignores: ["coverage/**", "node_modules/**"],
+    ignores: ["build/**", "coverage/**", "node_modules/**"],
   },
   {
     files: ["**/*.md"],
