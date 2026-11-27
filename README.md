@@ -61,13 +61,13 @@ Configuration is optional and lives in `~/.config/agent-baby-names/config.json`,
 
 ### Built-in Strategies
 
-- [`repo`](docs/strategies/repo.md) names a session after the Git repository it runs in.
-- [`git-clone`](docs/strategies/git-clone.md) names a session after a Git checkout that the prompt mentions or that it runs in.
-- [`github-repo`](docs/strategies/github-repo.md) names a session after one of your GitHub repositories that the prompt mentions, or the checkout it runs in.
-- [`topic`](docs/strategies/topic.md) names a session after a short topic that a model writes from the prompt.
-- [`prompt`](docs/strategies/prompt.md) names a session after a model's answer to a question that you write, which can change the name so far.
-- [`emoji`](docs/strategies/emoji.md) puts an emoji before or after the name, such as `👋 hello-world`.
-- [`directory`](docs/strategies/directory.md) names a session after the folder it runs in.
+- [`repo`](docs/strategies/repo.md) uses the repository the session runs in.
+- [`git-clone`](docs/strategies/git-clone.md) uses a checkout named in the prompt, else the current one.
+- [`github-repo`](docs/strategies/github-repo.md) uses one of your GitHub repositories named in the prompt.
+- [`topic`](docs/strategies/topic.md) asks a model for a short topic.
+- [`prompt`](docs/strategies/prompt.md) asks a model a question that you write.
+- [`emoji`](docs/strategies/emoji.md) adds an emoji, such as `👋 hello-world`.
+- [`directory`](docs/strategies/directory.md) uses the folder the session runs in.
 
 ## Contributing
 
