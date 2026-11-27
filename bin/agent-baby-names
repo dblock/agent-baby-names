@@ -2,7 +2,7 @@
 # Prints a name for an agent session from {"prompt", "cwd"} JSON on standard input, using the configured strategies.
 set -uo pipefail
 
-VERSION="0.2.0"
+VERSION="0.2.1"
 root="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
 
 usage() {
