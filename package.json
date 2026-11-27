@@ -7,9 +7,10 @@
   "type": "module",
   "scripts": {
     "test": "bats test",
-    "lint": "npm run lint:markdown && npm run lint:shell",
+    "lint": "npm run lint:markdown && npm run lint:shell && npm run lint:spelling",
     "lint:markdown": "eslint .",
     "lint:shell": "shellcheck -x bin/agent-baby-names lib/ask hosts/*/hook.sh strategies/*/strategy.sh scripts/*.sh test/*.bats test/test_helper.bash",
+    "lint:spelling": "cspell --no-progress",
     "package": "claude plugin validate . && claude plugin validate .claude-plugin/marketplace.json",
     "coverage": "scripts/coverage.sh"
   },
@@ -21,12 +22,12 @@
     "@cspell/dict-software-terms": "^5.4.11",
     "@eslint/markdown": "^8.0.3",
     "bats": "^1.13.0",
+    "cspell": "^10.5.2",
     "eslint": "^10.16.0",
     "eslint-plugin-markdown-links": "^0.9.1",
     "eslint-plugin-markdown-links-unlinked": "^0.1.0",
     "eslint-plugin-markdown-preferences": "^0.43.0",
     "eslint-plugin-markdown-preferences-paragraph": "^0.3.0",
-    "eslint-plugin-prose-spellcheck": "^0.2.0",
-    "shellcheck": "^4.1.0"
+    "eslint-plugin-prose-spellcheck": "^0.2.0"
   }
 }

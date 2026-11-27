@@ -22,8 +22,12 @@ jobs:
           cache: npm
       - name: Install Dependencies
         run: npm ci
+      - name: Install ShellCheck
+        env:
+          SHELLCHECK_VERSION: v0.11.0
+        run: |
+          curl -fsSL "https://github.com/koalaman/shellcheck/releases/download/$SHELLCHECK_VERSION/shellcheck-$SHELLCHECK_VERSION.linux.x86_64.tar.xz" |
+            tar -xJ -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/shellcheck-$SHELLCHECK_VERSION" >>"$GITHUB_PATH"
       - name: Run Lint
         run: npm run lint
-        env:
-          # The shellcheck package downloads its binary from GitHub, which rate-limits anonymous requests.
-          GITHUB_TOKEN: ${{ github.token }}
