@@ -14,4 +14,5 @@
 - [#12](https://github.com/dblock/agent-baby-names/pull/12): Add a `position` option to the `emoji` strategy to put the emoji before or after the name - [@dblock](https://github.com/dblock).
 - [#13](https://github.com/dblock/agent-baby-names/pull/13): Replace the `claude_model` and `copilot_model` options with a nested `model` option keyed by host - [@dblock](https://github.com/dblock).
 - [#14](https://github.com/dblock/agent-baby-names/pull/14): Add an Examples heading above the demo videos in the README - [@dblock](https://github.com/dblock).
+- [#15](https://github.com/dblock/agent-baby-names/pull/15): Add a `prompt` strategy that asks a model a question you write as a template, and can change the name so far - [@dblock](https://github.com/dblock).
 - Your contribution here.
