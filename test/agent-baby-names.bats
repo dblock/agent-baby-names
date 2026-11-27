@@ -92,11 +92,11 @@ STRATEGY
   [ "$stderr" = "agent-baby-names: Strategy \"$tmp/record.sh\" failed with status 3." ]
 }
 
-@test "uses git-clones without a configuration file" {
-  clone "$HOME/source/babynames"
-  run "$bin" < <(input "name the babynames project")
+@test "uses repo without a configuration file" {
+  clone "$HOME/source/babynames/master" https://github.com/dblock/babynames.git
+  run "$bin" < <(input "name this project" "$HOME/source/babynames/master")
   [ "$status" -eq 0 ]
-  [ "$output" = "🗂️ babynames" ]
+  [ "$output" = "babynames" ]
 }
 
 @test "reads the configuration from the XDG config folder" {

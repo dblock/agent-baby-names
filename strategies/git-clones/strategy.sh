@@ -1,5 +1,5 @@
 #!/bin/bash
-# The default strategy: names a session "<emoji> <repo>" after a Git checkout under the root folder that the prompt
+# Names a session "<emoji> <repo>" after a Git checkout under the root folder that the prompt
 # mentions, else the checkout that holds the working directory, else a topic; see lib/repos. A checkout is named after
 # its origin, else upstream, remote, so ~/source/foo/master and a fork checkout in ~/source/foo/dblock-foo are both foo.
 # Checkouts are found up to three folders deep, without looking inside a checkout. The list is cached and rebuilt when
