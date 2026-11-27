@@ -93,7 +93,7 @@ STRATEGY
 }
 
 @test "uses repo without a configuration file" {
-  clone "$HOME/source/babynames/master" https://github.com/dblock/babynames.git
+  clone "$HOME/source/babynames/master" https://github.com/octocat/babynames.git
   run "$bin" < <(input "name this project" "$HOME/source/babynames/master")
   [ "$status" -eq 0 ]
   [ "$output" = "babynames" ]

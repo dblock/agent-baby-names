@@ -1,6 +1,6 @@
 #!/bin/bash
 # The default strategy: names a session after the repository it runs in, the last part of the checkout's origin, else
-# upstream, remote URL, so ~/source/foo/master/lib and a fork checkout in ~/source/foo/dblock-foo are both "foo". A
+# upstream, remote URL, so ~/source/foo/master/lib and a fork checkout in ~/source/foo/octocat-foo are both "foo". A
 # checkout without a remote is named after its folder, and outside a checkout the working folder names the session. It
 # asks no model, keeps no cache, and has no options. A session in / or the home folder, or one that already has a name,
 # is left as it is.

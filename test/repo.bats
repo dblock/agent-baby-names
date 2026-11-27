@@ -9,14 +9,14 @@ setup() {
 }
 
 @test "names a session after the origin of its checkout, from a subfolder" {
-  clone "$tmp/foo/dblock-foo" git@github.com:dblock/foo.git
-  mkdir -p "$tmp/foo/dblock-foo/lib"
-  run "$strategy" < <(input x "$tmp/foo/dblock-foo/lib")
+  clone "$tmp/foo/octocat-foo" git@github.com:octocat/foo.git
+  mkdir -p "$tmp/foo/octocat-foo/lib"
+  run "$strategy" < <(input x "$tmp/foo/octocat-foo/lib")
   [ "$output" = "foo" ]
 }
 
 @test "names a linked worktree after its repository" {
-  clone "$tmp/foo/master" https://github.com/dblock/foo.git
+  clone "$tmp/foo/master" https://github.com/octocat/foo.git
   git -C "$tmp/foo/master" -c user.name=Test -c user.email=test@example.com commit -q --allow-empty -m Start
   git -C "$tmp/foo/master" worktree add -q -b topic "$tmp/foo/implementation"
   run "$strategy" < <(input x "$tmp/foo/implementation")
@@ -25,7 +25,7 @@ setup() {
 
 @test "uses the upstream remote without an origin" {
   clone "$tmp/renamed"
-  git -C "$tmp/renamed" remote add upstream https://github.com/dblock/real-name/
+  git -C "$tmp/renamed" remote add upstream https://github.com/octocat/real-name/
   run "$strategy" < <(input x "$tmp/renamed")
   [ "$output" = "real-name" ]
 }
@@ -55,7 +55,7 @@ setup() {
 }
 
 @test "keeps a name it is given" {
-  clone "$tmp/foo" https://github.com/dblock/foo.git
+  clone "$tmp/foo" https://github.com/octocat/foo.git
   run "$strategy" <<<"{\"prompt\": \"x\", \"cwd\": \"$tmp/foo\", \"name\": \"given\"}"
   [ -z "$output" ]
 }

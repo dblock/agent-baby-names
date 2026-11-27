@@ -7,14 +7,14 @@ setup() {
   common_setup
   strategy="$root/strategies/git-clones/strategy.sh"
   src="$tmp/source"
-  clone "$src/testlanes/master" git@github.com:dblock/testlanes.git
-  git -C "$src/testlanes/master" -c user.name=Test -c user.email=test@example.com commit -q --allow-empty -m Start
-  git -C "$src/testlanes/master" worktree add -q -b topic "$src/testlanes/implementation"
-  clone "$src/testlanes/dblock-testlanes" https://github.com/dblock/testlanes
-  clone "$src/excalc"
-  clone "$src/excalc-rs" https://github.com/dblock/excalc-rs.git
-  clone "$src/mongoid/mongoid_fulltext/upstream-mongoid_fulltext" https://github.com/mongoid/mongoid_fulltext.git
-  clone "$src/mongoid/mongoid_orderable" https://github.com/mongoid/mongoid_orderable.git
+  clone "$src/hello-world/master" git@github.com:octocat/hello-world.git
+  git -C "$src/hello-world/master" -c user.name=Test -c user.email=test@example.com commit -q --allow-empty -m Start
+  git -C "$src/hello-world/master" worktree add -q -b topic "$src/hello-world/implementation"
+  clone "$src/hello-world/octocat-hello-world" https://github.com/octocat/hello-world
+  clone "$src/gizmo"
+  clone "$src/widget-rs" https://github.com/octocat/widget-rs.git
+  clone "$src/acme/acme_widgets/upstream-acme_widgets" https://github.com/acme/acme_widgets.git
+  clone "$src/acme/acme_orderable" https://github.com/acme/acme_orderable.git
   clone "$src/g"
   options="$(jq -cn --arg root "$src" --arg cache "$tmp/strategy-cache" '{root: $root, cache: $cache}')"
 }
@@ -26,36 +26,36 @@ name() {
 
 @test "lists each checkout once, named after its remote" {
   name "" >/dev/null
-  [ "$(cat "$tmp/strategy-cache/git-clones.txt")" = "$(printf '%s\n' excalc excalc-rs g mongoid_fulltext \
-    mongoid_orderable testlanes)" ]
+  [ "$(cat "$tmp/strategy-cache/git-clones.txt")" = "$(printf '%s\n' acme_orderable acme_widgets g gizmo \
+    hello-world widget-rs)" ]
 }
 
 @test "a checkout in the prompt, ignoring case" {
-  [ "$(name "let's improve TestLanes.")" = "testlanes" ]
+  [ "$(name "let's improve Hello-World.")" = "hello-world" ]
 }
 
 @test "the longest matching checkout" {
-  [ "$(name "port excalc to excalc-rs")" = "excalc-rs" ]
+  [ "$(name "port gizmo to widget-rs")" = "widget-rs" ]
 }
 
 @test "a checkout in an organization folder, hyphenated" {
-  [ "$(name "fix mongoid_fulltext search")" = "mongoid-fulltext" ]
+  [ "$(name "fix acme_widgets search")" = "acme-widgets" ]
 }
 
 @test "folder names of checkouts with a remote are not repositories" {
   [ "$(name "work on implementation")" = "" ]
-  [ "$(name "merge upstream-mongoid_fulltext")" = "" ]
+  [ "$(name "merge upstream-acme_widgets")" = "" ]
 }
 
 @test "an upstream remote names a checkout without an origin" {
   clone "$src/renamed"
-  git -C "$src/renamed" remote add upstream https://github.com/dblock/real-name/
+  git -C "$src/renamed" remote add upstream https://github.com/octocat/real-name/
   [ "$(name "fix real-name")" = "real-name" ]
 }
 
 @test "checkouts deeper than three folders or inside a checkout are not listed" {
   clone "$src/a/b/c/deep"
-  clone "$src/excalc/vendor/inner"
+  clone "$src/gizmo/vendor/inner"
   name "" >/dev/null
   run ! grep -qxE 'deep|inner' "$tmp/strategy-cache/git-clones.txt"
 }
@@ -65,8 +65,8 @@ name() {
 }
 
 @test "the checkout that holds the working directory" {
-  mkdir -p "$src/testlanes/implementation/lib"
-  [ "$(name "fix the build" "$src/testlanes/implementation/lib")" = "testlanes" ]
+  mkdir -p "$src/hello-world/implementation/lib"
+  [ "$(name "fix the build" "$src/hello-world/implementation/lib")" = "hello-world" ]
 }
 
 @test "a working directory checkout outside the root" {
@@ -80,23 +80,23 @@ name() {
 }
 
 @test "a prompt repository wins over the working directory" {
-  [ "$(name "update excalc" "$src/testlanes/master")" = "excalc" ]
+  [ "$(name "update gizmo" "$src/hello-world/master")" = "gizmo" ]
 }
 
 @test "keeps a name it is given" {
-  [ "$(name "update excalc" "$src/testlanes/master" "$options" "given")" = "" ]
+  [ "$(name "update gizmo" "$src/hello-world/master" "$options" "given")" = "" ]
   [ ! -e "$tmp/strategy-cache/git-clones.txt" ]
 }
 
 @test "the list is rebuilt when the root changes" {
-  name "update excalc" >/dev/null
+  name "update gizmo" >/dev/null
   touch -t 202001010000 "$tmp/strategy-cache/git-clones.txt"
   clone "$src/newproject"
   [ "$(name "start newproject")" = "newproject" ]
 }
 
 @test "the list is rebuilt after a day" {
-  name "update excalc" >/dev/null
+  name "update gizmo" >/dev/null
   clone "$src/later"
   touch -t 202001010000 "$src"
   [ "$(name "start later")" = "" ]
@@ -118,5 +118,5 @@ name() {
 }
 
 @test "a missing root names nothing" {
-  [ "$(name "update excalc" / "$(jq -c ".root = \"$tmp/missing\"" <<<"$options")")" = "" ]
+  [ "$(name "update gizmo" / "$(jq -c ".root = \"$tmp/missing\"" <<<"$options")")" = "" ]
 }

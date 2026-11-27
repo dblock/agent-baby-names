@@ -7,4 +7,5 @@
 - [#5](https://github.com/dblock/agent-baby-names/pull/5): Replace `project-emoji` with `git-clones`, which names checkouts after their remote, and add the `github-repos` strategy - [@dblock](https://github.com/dblock).
 - [#6](https://github.com/dblock/agent-baby-names/pull/6): Name sessions after their Git repository with the new default `repo` strategy - [@dblock](https://github.com/dblock).
 - [#7](https://github.com/dblock/agent-baby-names/pull/7): Combine strategies in a list, with the new `topic` and `emoji` strategies taking over topics and emojis from `git-clones` and `github-repos` - [@dblock](https://github.com/dblock).
+- [#8](https://github.com/dblock/agent-baby-names/pull/8): Add examples to each strategy's documentation, explain what each strategy caches and when it expires, and use generic example names - [@dblock](https://github.com/dblock).
 - Your contribution here.

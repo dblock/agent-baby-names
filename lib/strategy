@@ -29,7 +29,7 @@ prompt="$(jq -r '.prompt // empty' <<<"$input")" cwd="$(jq -r '.cwd // empty' <<
   name="$(jq -r '.name // empty' <<<"$input")"
 mkdir -p "$cache_dir" || exit 1
 
-# Lowercase words joined by hyphens, such as mongoid-fulltext for mongoid_fulltext.
+# Lowercase words joined by hyphens, such as acme-widgets for acme_widgets.
 slug() {
   tr '[:upper:]' '[:lower:]' <<<"$1" | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'
 }

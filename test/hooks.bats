@@ -26,18 +26,18 @@ copilot() {
 }
 
 @test "Claude Code: sets the title of an untitled session" {
-  out="$(NAME='🧪 testlanes' claude '{"session_id": "s1", "prompt": "speed up the testlanes CI", "cwd": "/work"}')"
-  [ "$out" = '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","sessionTitle":"🧪 testlanes"}}' ]
-  grep -qxF 'input={"prompt":"speed up the testlanes CI","cwd":"/work","host":"claude","name":""}' "$STUB_LOG"
+  out="$(NAME='🧪 hello-world' claude '{"session_id": "s1", "prompt": "speed up the hello-world CI", "cwd": "/work"}')"
+  [ "$out" = '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","sessionTitle":"🧪 hello-world"}}' ]
+  grep -qxF 'input={"prompt":"speed up the hello-world CI","cwd":"/work","host":"claude","name":""}' "$STUB_LOG"
 }
 
 @test "Claude Code: keeps an existing title" {
-  [ -z "$(NAME='🧪 testlanes' claude '{"prompt": "improve testlanes", "cwd": "/", "session_title": "mine"}')" ]
+  [ -z "$(NAME='🧪 hello-world' claude '{"prompt": "improve hello-world", "cwd": "/", "session_title": "mine"}')" ]
   [ ! -s "$STUB_LOG" ]
 }
 
 @test "Claude Code: names a session whose title is empty" {
-  [ -n "$(NAME='🧪 testlanes' claude '{"prompt": "x", "cwd": "/", "session_title": ""}')" ]
+  [ -n "$(NAME='🧪 hello-world' claude '{"prompt": "x", "cwd": "/", "session_title": ""}')" ]
 }
 
 @test "Claude Code: encodes quotes in the title" {
@@ -60,21 +60,21 @@ copilot() {
 }
 
 @test "Copilot CLI: asks the agent to rename a new session" {
-  out="$(NAME='🧪 testlanes' copilot s1 'speed up the testlanes CI')"
-  [ "$(jq -r .additionalContext <<<"$out")" = 'Before anything else, call rename_session with name "🧪 testlanes". Do not mention the rename. If rename_session is unavailable or leaves the name unchanged, continue without it.' ]
-  grep -qxF 'input={"prompt":"speed up the testlanes CI","cwd":"/work","host":"copilot","name":""}' "$STUB_LOG"
+  out="$(NAME='🧪 hello-world' copilot s1 'speed up the hello-world CI')"
+  [ "$(jq -r .additionalContext <<<"$out")" = 'Before anything else, call rename_session with name "🧪 hello-world". Do not mention the rename. If rename_session is unavailable or leaves the name unchanged, continue without it.' ]
+  grep -qxF 'input={"prompt":"speed up the hello-world CI","cwd":"/work","host":"copilot","name":""}' "$STUB_LOG"
 }
 
 @test "Copilot CLI: leaves later prompts alone" {
-  NAME='🧪 testlanes' copilot s1 'first' >/dev/null
-  [ -z "$(NAME='🧪 testlanes' copilot s1 'and the lint job')" ]
+  NAME='🧪 hello-world' copilot s1 'first' >/dev/null
+  [ -z "$(NAME='🧪 hello-world' copilot s1 'and the lint job')" ]
   [ "$(grep -c '^input=' "$STUB_LOG" | tr -d ' ')" = 1 ]
 }
 
 @test "Copilot CLI: forgets sessions after 90 days" {
   mkdir -p "$COPILOT_HOME/agent-baby-names/sessions"
   touch -t 202001010000 "$COPILOT_HOME/agent-baby-names/sessions/old"
-  NAME='🧪 testlanes' copilot s1 'x' >/dev/null
+  NAME='🧪 hello-world' copilot s1 'x' >/dev/null
   [ ! -e "$COPILOT_HOME/agent-baby-names/sessions/old" ]
   [ -e "$COPILOT_HOME/agent-baby-names/sessions/s1" ]
 }

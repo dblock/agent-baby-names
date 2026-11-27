@@ -4,7 +4,7 @@
 # cached for a day. Without gh, or when it fails, the old list is kept.
 #
 # Options, all optional, besides the cache option in lib/strategy:
-#   owners  organizations or users whose repositories to add, such as ["mongoid"] (default none)
+#   owners  organizations or users whose repositories to add, such as ["acme"] (default none)
 set -uo pipefail
 
 dir="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Puts an emoji before the name so far, such as "🧪 testlanes". The emoji comes from the pins file, else the cache,
+# Puts an emoji before the name so far, such as "🧪 hello-world". The emoji comes from the pins file, else the cache,
 # else the model, whose pick is cached. Without a name it names nothing.
 #
 # Options, all optional, besides those in lib/strategy:
