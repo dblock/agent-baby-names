@@ -3,6 +3,7 @@ Node.js
 awk
 babynames
 dblock
+getpath
 kcov
 mcps
 mmin

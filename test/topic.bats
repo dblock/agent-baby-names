@@ -68,7 +68,36 @@ asked() {
 echo "claude $*" >>"$STUB_LOG"
 echo "loud-fan"
 STUB
-  models="$(jq -c '.ask = "auto" | .claude_model = "sonnet"' <<<"$options")"
+  models="$(jq -c '.ask = "auto" | .model.claude = "sonnet"' <<<"$options")"
   [ "$(AGENT_BABY_NAMES_HOST=claude name "why is it loud" "$models")" = "loud-fan" ]
   grep -q '^claude -p --model sonnet ' "$STUB_LOG"
+}
+
+@test "model sets each host's model, and a host left out keeps its default" {
+  script "$tmp/stubs/copilot" <<'STUB'
+#!/bin/bash
+echo "copilot $*" >>"$STUB_LOG"
+echo "loud-fan"
+STUB
+  script "$tmp/stubs/claude" <<'STUB'
+#!/bin/bash
+echo "claude $*" >>"$STUB_LOG"
+echo "loud-fan"
+STUB
+  models="$(jq -c '.ask = "auto" | .model.copilot = "gpt-5"' <<<"$options")"
+  [ "$(AGENT_BABY_NAMES_HOST=copilot name "why is it loud" "$models")" = "loud-fan" ]
+  grep -q '^copilot .*--model gpt-5' "$STUB_LOG"
+  [ "$(AGENT_BABY_NAMES_HOST=claude name "why is it loud" "$models")" = "loud-fan" ]
+  grep -q '^claude -p --model haiku ' "$STUB_LOG"
+}
+
+@test "a model that is not an object keeps the defaults" {
+  script "$tmp/stubs/claude" <<'STUB'
+#!/bin/bash
+echo "claude $*" >>"$STUB_LOG"
+echo "loud-fan"
+STUB
+  models="$(jq -c '.ask = "auto" | .model = "sonnet"' <<<"$options")"
+  [ "$(AGENT_BABY_NAMES_HOST=claude name "why is it loud" "$models")" = "loud-fan" ]
+  grep -q '^claude -p --model haiku ' "$STUB_LOG"
 }

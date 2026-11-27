@@ -5,17 +5,18 @@
 # Options shared by the strategies that source this file, all optional:
 #   cache  the cache folder (default ~/.cache/agent-baby-names)
 #   ask    the model to ask: auto, none, or a command (default auto, the host's small model)
-#   claude_model   the model that auto asks in Claude Code (default haiku)
-#   copilot_model  the model that auto asks in GitHub Copilot CLI (default claude-haiku-4.5)
+#   model  the model that auto asks for each host, such as {"claude": "haiku", "copilot": "claude-haiku-4.5"}
+#          (default haiku in Claude Code and claude-haiku-4.5 in GitHub Copilot CLI)
 
 lib_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 options="${AGENT_BABY_NAMES_OPTIONS:-}"
 [[ -n "$options" ]] || options="{}"
 
+# Prints an option, given its name or a dotted path such as model.claude, else the default.
 option() {
   local value
-  value="$(jq -r --arg k "$1" '.[$k] // empty | tostring' <<<"$options" 2>/dev/null)"
+  value="$(jq -r --arg k "$1" 'getpath($k | split(".")) // empty | tostring' <<<"$options" 2>/dev/null)"
   value="${value:-$2}"
   [[ "${3:-}" == path ]] && value="${value/#\~/$HOME}"
   echo "$value"
@@ -35,7 +36,7 @@ slug() {
 }
 
 ask_model() {
-  AGENT_BABY_NAMES_CACHE="$cache_dir" AGENT_BABY_NAMES_CLAUDE_MODEL="$(option claude_model haiku)" \
-    AGENT_BABY_NAMES_COPILOT_MODEL="$(option copilot_model claude-haiku-4.5)" "$lib_dir/ask" "$(option ask auto)" \
+  AGENT_BABY_NAMES_CACHE="$cache_dir" AGENT_BABY_NAMES_CLAUDE_MODEL="$(option model.claude haiku)" \
+    AGENT_BABY_NAMES_COPILOT_MODEL="$(option model.copilot claude-haiku-4.5)" "$lib_dir/ask" "$(option ask auto)" \
     <<<"$1"
 }
