@@ -32,7 +32,7 @@ Copilot CLI runs plugin hooks only in folders you have trusted.
 
 Start a session and send a prompt. The first prompt of a session without a name gives it one, and later prompts and sessions you have named yourself are left alone.
 
-With the default `repo` strategy, a session is named after the Git repository it runs in, such as `hello-world` for a session in `~/source/hello-world/master`. Combine other strategies for names such as `👋 hello-world` or `🔊 loud-laptop-fan` that a model helps choose.
+By default, a session is named after a short topic of its first prompt, with an emoji, such as `🔊 loud-laptop-fan` for "why is my laptop so loud". The topic and emoji come from the host's small model, Haiku; use the `repo` strategy to name sessions after their repository without asking a model.
 
 ### Examples
 
@@ -57,11 +57,11 @@ Configuration is optional and lives in `~/.config/agent-baby-names/config.json`,
 }
 ```
 
-`strategy` is a strategy or a list of strategies, each the name of a built-in strategy below or the path to [your own strategy](docs/strategies/custom.md), any executable that prints a name. The strategies run in order, and each one gets the name so far and keeps it or changes it, so this example names a session after a checkout, else a topic, and then puts an emoji before the name. `strategies` holds each strategy's options under its name.
+`strategy` is a strategy or a list of strategies, each the name of a built-in strategy below or the path to [your own strategy](docs/strategies/custom.md), any executable that prints a name. The strategies run in order, and each one gets the name so far and keeps it or changes it, so this example names a session after a checkout in `~/code` that the prompt mentions or that it runs in, else a topic, and then puts an emoji before the name. `strategies` holds each strategy's options under its name.
 
 ### Built-in Strategies
 
-- [`repo`](docs/strategies/repo.md), the default, names a session after the Git repository it runs in.
+- [`repo`](docs/strategies/repo.md) names a session after the Git repository it runs in.
 - [`git-clone`](docs/strategies/git-clone.md) names a session after a Git checkout that the prompt mentions or that it runs in.
 - [`github-repo`](docs/strategies/github-repo.md) names a session after one of your GitHub repositories that the prompt mentions, or the checkout it runs in.
 - [`topic`](docs/strategies/topic.md) names a session after a short topic that a model writes from the prompt.
