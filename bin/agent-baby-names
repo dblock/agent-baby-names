@@ -42,12 +42,20 @@ done
 # A model that a strategy asks may run this host's hooks again; never name that inner session.
 [[ -n "${AGENT_BABY_NAMES_NESTED:-}" ]] && exit 0
 
-command -v jq >/dev/null || fail "jq is required."
+type -P jq >/dev/null || fail "jq is required."
+
+# In Git Bash on Windows, a native jq.exe ends lines with CRLF unless given --binary, and Git Bash would turn its
+# arguments that look like paths, such as /work, into Windows paths, so jq gets files on standard input instead.
+# The strategies inherit both fixes.
+if [[ "$OSTYPE" == msys* || "$OSTYPE" == cygwin* ]]; then
+  jq() { MSYS2_ARG_CONV_EXCL="*" command jq -b "$@"; }
+  export -f jq
+fi
 
 config_file="${AGENT_BABY_NAMES_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/agent-baby-names/config.json}"
 config="{}"
 if [[ -f "$config_file" ]]; then
-  config="$(jq -ce 'if type == "object" then . else error("not an object") end' "$config_file" 2>/dev/null)" ||
+  config="$(jq -ce 'if type == "object" then . else error("not an object") end' <"$config_file" 2>/dev/null)" ||
     fail "$config_file is not a JSON object."
 fi
 
@@ -73,6 +81,12 @@ done < <(jq -r '.strategy // "repo" | if type == "array" then .[] else . end | t
 
 input="$(jq -ce --arg host "$host" '{prompt: (.prompt // ""), cwd: (.cwd // ""), host: $host}' 2>/dev/null)" ||
   fail "The input must be a JSON object."
+
+# On Windows the folder is a path such as C:\Users\me\project; strategies get its Git Bash form, /c/Users/me/project.
+cwd="$(jq -r .cwd <<<"$input")"
+if [[ -n "$cwd" ]] && command -v cygpath >/dev/null; then
+  input="$(jq -c --arg cwd "$(cygpath -u "$cwd")" '.cwd = $cwd' <<<"$input")"
+fi
 
 # Each strategy gets the name so far and prints a new name, or nothing to keep it.
 name=""

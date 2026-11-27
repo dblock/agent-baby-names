@@ -22,6 +22,10 @@ jobs:
         entry:
           - { os: ubuntu-24.04 }
           - { os: macos-15 }
+          - { os: windows-2025 }
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Check Out
         uses: actions/checkout@v7.0.1

@@ -17,6 +17,7 @@ Agent Baby Names is a Claude Code and GitHub Copilot CLI plugin that names a new
 - Runtime code is Bash and jq only, plus Git and the GitHub CLI for the strategies that use them, with no build step; plugins run straight from a clone. Node.js is for development tools only.
 - A hook never fails the user's prompt: on any error it prints nothing and exits 0.
 - Never rename a session that already has a name.
+- Scripts also run in Git Bash on Windows: take `C:\` paths apart only after `cygpath -u`, give jq files on standard input rather than as arguments, and keep LF line endings.
 - Configuration comes from the config file, not the environment, apart from `AGENT_BABY_NAMES_CONFIG`.
 - Keep the version identical in `bin/agent-baby-names` and the two manifests; a test checks it.
 - Tests must not use the network, a real model, or the user's configuration.

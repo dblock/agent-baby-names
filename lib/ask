@@ -18,9 +18,12 @@ ask_claude() {
 # A throwaway Copilot home loads no hooks, instructions, or MCP servers and saves no session; sign-in comes from
 # the keychain.
 ask_copilot() {
-  local home status
+  local home copilot_home status
   home="$(mktemp -d)" || return 1
-  COPILOT_HOME="$home" copilot -p "$question" -s --model "${AGENT_BABY_NAMES_COPILOT_MODEL:-claude-haiku-4.5}" \
+  # A native copilot.exe in Git Bash on Windows needs a Windows path, and its question passed unchanged.
+  copilot_home="$home"
+  command -v cygpath >/dev/null && copilot_home="$(cygpath -w "$home")"
+  MSYS2_ARG_CONV_EXCL="*" COPILOT_HOME="$copilot_home" copilot -p "$question" -s --model "${AGENT_BABY_NAMES_COPILOT_MODEL:-claude-haiku-4.5}" \
     --available-tools "" --no-custom-instructions --disable-builtin-mcps --no-auto-update </dev/null
   status=$?
   rm -rf "$home"

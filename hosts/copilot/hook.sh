@@ -5,7 +5,10 @@
 # nothing and exits 0.
 set -uo pipefail
 
-root="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../.." && pwd)"
+script="${BASH_SOURCE[0]}"
+# Git Bash on Windows may be given a path such as C:\plugins\hook.sh, which readlink and dirname cannot take apart.
+command -v cygpath >/dev/null && script="$(cygpath -u "$script")"
+root="$(cd "$(dirname "$(readlink -f "$script")")/../.." && pwd)"
 seen_dir="${COPILOT_HOME:-$HOME/.copilot}/agent-baby-names/sessions"
 
 main() {
@@ -21,7 +24,8 @@ main() {
 
   title="$(jq -c '{prompt, cwd}' <<<"$input" | "$root/bin/agent-baby-names" --host copilot 2>/dev/null)"
   [[ -n "$title" ]] || return 0
-  jq -cn --arg title "$title" '{additionalContext: ("Before anything else, call rename_session with name " + ($title | @json) + ". Do not mention the rename. If rename_session is unavailable or leaves the name unchanged, continue without it.")}'
+  # Git Bash on Windows would turn a title that looks like a path into a Windows path for a native jq.exe.
+  MSYS2_ARG_CONV_EXCL="*" jq -cn --arg title "$title" '{additionalContext: ("Before anything else, call rename_session with name " + ($title | @json) + ". Do not mention the rename. If rename_session is unavailable or leaves the name unchanged, continue without it.")}'
 }
 
 main
