@@ -6,22 +6,22 @@ A plugin for Claude Code and GitHub Copilot CLI that names each new session afte
 
 ## Installation
 
-The plugin needs Bash and [jq](https://jqlang.org/). The repository is its own plugin marketplace.
+The plugin needs Bash and [jq](https://jqlang.org/). It is listed in the [dblock marketplace](https://github.com/dblock/agent-marketplace), which you add once.
 
 ### Claude Code
 
 ```sh
-claude plugin marketplace add dblock/agent-baby-names
-claude plugin install agent-baby-names@agent-baby-names
+claude plugin marketplace add dblock/agent-marketplace
+claude plugin install agent-baby-names@dblock
 ```
 
-Claude Code 2.1.275 and later can also install it in one step from a session with `/plugin install agent-baby-names --marketplace dblock/agent-baby-names`.
+Claude Code 2.1.275 and later can also install it in one step from a session with `/plugin install agent-baby-names --marketplace dblock/agent-marketplace`.
 
 ### GitHub Copilot CLI
 
 ```sh
-copilot plugin marketplace add dblock/agent-baby-names
-copilot plugin install agent-baby-names@agent-baby-names
+copilot plugin marketplace add dblock/agent-marketplace
+copilot plugin install agent-baby-names@dblock
 ```
 
 Copilot CLI runs plugin hooks only in folders you have trusted.

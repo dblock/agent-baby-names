@@ -30,13 +30,13 @@ Each strategy is a bundled strategy name or a path to an executable, and its opt
 
 ## Plugin Manifests
 
-Claude Code reads `.claude-plugin/plugin.json`, and `.claude-plugin/marketplace.json` makes the repository its own one-plugin marketplace. GitHub Copilot CLI reads `.github/plugin/plugin.json`, which it finds before `.claude-plugin/plugin.json`, so each host gets its own hook format.
+Claude Code reads `.claude-plugin/plugin.json`. The repository declares no marketplace of its own; the `dblock` marketplace in [dblock/agent-marketplace](https://github.com/dblock/agent-marketplace) lists it from GitHub, so one marketplace can hold several plugins without their names colliding. GitHub Copilot CLI reads `.github/plugin/plugin.json`, which it finds before `.claude-plugin/plugin.json`, so each host gets its own hook format.
 
 ## Hosts
 
 Claude Code passes `session_title` in the hook input, so its adapter names a session only while that is empty, and replies with `sessionTitle`. Copilot CLI passes no name and its hooks cannot set one, so its adapter remembers each session ID it has seen in `~/.copilot/agent-baby-names/sessions`, forgetting them after 90 days, and on a session's first prompt replies with `additionalContext` asking the agent to call `rename_session`.
 
-Each host finds its hook through the plugin root. Claude Code expands `${CLAUDE_PLUGIN_ROOT}` in the hook command. Copilot CLI runs hooks in the plugin root but expands `${PLUGIN_ROOT}` only in a hook's `env`, so the registration maps it to `AGENT_BABY_NAMES_PLUGIN_ROOT`. Copilot CLI loads plugin hooks only in trusted folders. Both hosts read the marketplace in `.claude-plugin/marketplace.json`.
+Each host finds its hook through the plugin root. Claude Code expands `${CLAUDE_PLUGIN_ROOT}` in the hook command. Copilot CLI runs hooks in the plugin root but expands `${PLUGIN_ROOT}` only in a hook's `env`, so the registration maps it to `AGENT_BABY_NAMES_PLUGIN_ROOT`. Copilot CLI loads plugin hooks only in trusted folders. Both hosts read that marketplace and install the plugin from this repository's default branch.
 
 ## Failure
 

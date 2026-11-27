@@ -47,7 +47,6 @@ STRATEGY
 @test "the manifests and the script share one version" {
   version="$("$bin" --version | cut -d' ' -f2)"
   [ "$(jq -r .version "$root/.claude-plugin/plugin.json")" = "$version" ]
-  [ "$(jq -r '.plugins[0].version' "$root/.claude-plugin/marketplace.json")" = "$version" ]
   [ "$(jq -r .version "$root/.github/plugin/plugin.json")" = "$version" ]
 }
 
