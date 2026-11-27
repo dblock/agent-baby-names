@@ -1,6 +1,6 @@
 {
   "name": "agent-baby-names",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Names each new Claude Code and GitHub Copilot CLI session after the project it works on.",
   "license": "MIT",
