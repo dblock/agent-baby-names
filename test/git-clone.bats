@@ -5,7 +5,7 @@ source "$BATS_TEST_DIRNAME/test_helper.bash"
 
 setup() {
   common_setup
-  strategy="$root/strategies/git-clones/strategy.sh"
+  strategy="$root/strategies/git-clone/strategy.sh"
   src="$tmp/source"
   clone "$src/hello-world/master" git@github.com:octocat/hello-world.git
   git -C "$src/hello-world/master" -c user.name=Test -c user.email=test@example.com commit -q --allow-empty -m Start
@@ -26,7 +26,7 @@ name() {
 
 @test "lists each checkout once, named after its remote" {
   name "" >/dev/null
-  [ "$(cat "$tmp/strategy-cache/git-clones.txt")" = "$(printf '%s\n' acme_orderable acme_widgets g gizmo \
+  [ "$(cat "$tmp/strategy-cache/git-clone.txt")" = "$(printf '%s\n' acme_orderable acme_widgets g gizmo \
     hello-world widget-rs)" ]
 }
 
@@ -57,7 +57,7 @@ name() {
   clone "$src/a/b/c/deep"
   clone "$src/gizmo/vendor/inner"
   name "" >/dev/null
-  run ! grep -qxE 'deep|inner' "$tmp/strategy-cache/git-clones.txt"
+  run ! grep -qxE 'deep|inner' "$tmp/strategy-cache/git-clone.txt"
 }
 
 @test "names shorter than three characters are ignored" {
@@ -85,12 +85,12 @@ name() {
 
 @test "keeps a name it is given" {
   [ "$(name "update gizmo" "$src/hello-world/master" "$options" "given")" = "" ]
-  [ ! -e "$tmp/strategy-cache/git-clones.txt" ]
+  [ ! -e "$tmp/strategy-cache/git-clone.txt" ]
 }
 
 @test "the list is rebuilt when the root changes" {
   name "update gizmo" >/dev/null
-  touch -t 202001010000 "$tmp/strategy-cache/git-clones.txt"
+  touch -t 202001010000 "$tmp/strategy-cache/git-clone.txt"
   clone "$src/newproject"
   [ "$(name "start newproject")" = "newproject" ]
 }
@@ -101,20 +101,20 @@ name() {
   touch -t 202001010000 "$src"
   [ "$(name "start later")" = "" ]
   touch -t 202001010000 "$src"
-  touch -t "$(date -v-2d +%Y%m%d%H%M 2>/dev/null || date -d '2 days ago' +%Y%m%d%H%M)" "$tmp/strategy-cache/git-clones.txt"
+  touch -t "$(date -v-2d +%Y%m%d%H%M 2>/dev/null || date -d '2 days ago' +%Y%m%d%H%M)" "$tmp/strategy-cache/git-clone.txt"
   [ "$(name "start later")" = "later" ]
 }
 
 @test "defaults to ~/source and the XDG cache" {
   clone "$HOME/source/babynames"
   [ "$(name "name babynames" / "{}")" = "babynames" ]
-  [ -s "$XDG_CACHE_HOME/agent-baby-names/git-clones.txt" ]
+  [ -s "$XDG_CACHE_HOME/agent-baby-names/git-clone.txt" ]
 }
 
 @test "expands ~ in folder options" {
   clone "$HOME/code/babynames"
   [ "$(name "name babynames" / '{"root": "~/code/", "cache": "~/cache"}')" = "babynames" ]
-  [ -s "$HOME/cache/git-clones.txt" ]
+  [ -s "$HOME/cache/git-clone.txt" ]
 }
 
 @test "a missing root names nothing" {

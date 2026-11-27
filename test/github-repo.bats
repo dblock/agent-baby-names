@@ -5,7 +5,7 @@ source "$BATS_TEST_DIRNAME/test_helper.bash"
 
 setup() {
   common_setup
-  strategy="$root/strategies/github-repos/strategy.sh"
+  strategy="$root/strategies/github-repo/strategy.sh"
   # A fake gh that records each call and lists repositories of the viewer or of the acme organization.
   script "$tmp/stubs/gh" <<'GH'
 #!/bin/bash
@@ -31,7 +31,7 @@ calls() {
 @test "a repository of yours in the prompt" {
   [ "$(name "speed up the hello-world CI")" = "hello-world" ]
   grep -qxF 'gh repo list --limit 1000 --json name --jq .[].name' "$STUB_LOG"
-  [ "$(cat "$tmp/strategy-cache/github-repos.txt")" = "$(printf '%s\n' hello-world widget-rs)" ]
+  [ "$(cat "$tmp/strategy-cache/github-repo.txt")" = "$(printf '%s\n' hello-world widget-rs)" ]
 }
 
 @test "the list is cached for a day" {
@@ -39,7 +39,7 @@ calls() {
   [ "$(name "fix widget-rs")" = "widget-rs" ]
   [ "$(calls)" = 1 ]
   touch -t "$(date -v-2d +%Y%m%d%H%M 2>/dev/null || date -d '2 days ago' +%Y%m%d%H%M)" \
-    "$tmp/strategy-cache/github-repos.txt"
+    "$tmp/strategy-cache/github-repo.txt"
   name "fix widget-rs" >/dev/null
   [ "$(calls)" = 2 ]
 }
@@ -50,7 +50,7 @@ calls() {
   [ "$(name "fix acme_widgets" / "$owners")" = "acme-widgets" ]
   grep -qxF 'gh repo list acme --limit 1000 --json name --jq .[].name' "$STUB_LOG"
   [ "$(calls)" = 3 ]
-  [ -s "$tmp/strategy-cache/github-repos-acme.txt" ]
+  [ -s "$tmp/strategy-cache/github-repo-acme.txt" ]
 }
 
 @test "one owner may be a string" {
@@ -66,9 +66,9 @@ calls() {
   clone "$tmp/checkout" https://github.com/octocat/checkout.git
   [ "$(GH_FAIL=1 name "fix hello-world" "$tmp/checkout")" = "checkout" ]
   [ "$(GH_FAIL=1 name "fix hello-world")" = "" ]
-  [ ! -e "$tmp/strategy-cache/github-repos.txt" ]
+  [ ! -e "$tmp/strategy-cache/github-repo.txt" ]
   name "fix hello-world" >/dev/null
-  touch -t 202001010000 "$tmp/strategy-cache/github-repos.txt"
+  touch -t 202001010000 "$tmp/strategy-cache/github-repo.txt"
   [ "$(GH_FAIL=1 name "fix hello-world")" = "hello-world" ]
-  [ "$(cd "$tmp/strategy-cache" && echo *)" = "github-repos.txt" ]
+  [ "$(cd "$tmp/strategy-cache" && echo *)" = "github-repo.txt" ]
 }
