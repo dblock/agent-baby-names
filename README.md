@@ -4,7 +4,7 @@
 
 [![Test](https://github.com/dblock/agent-baby-names/actions/workflows/test.yml/badge.svg)](https://github.com/dblock/agent-baby-names/actions/workflows/test.yml) [![Lint](https://github.com/dblock/agent-baby-names/actions/workflows/lint.yml/badge.svg)](https://github.com/dblock/agent-baby-names/actions/workflows/lint.yml) [![Package](https://github.com/dblock/agent-baby-names/actions/workflows/package.yml/badge.svg)](https://github.com/dblock/agent-baby-names/actions/workflows/package.yml)
 
-A plugin for Claude Code and GitHub Copilot CLI that names each new session after the project it works on, such as `📧 gmail-toggle`, using a naming strategy you can choose or write yourself.
+A plugin for Claude Code and GitHub Copilot CLI that names each new session after the project it works on, such as `📧 gmail-toggle`, using a naming strategy you can choose or write yourself. Read the [introductory blog post](https://code.dblock.org/2026/11/27/naming-claude-code-and-copilot-sessions-after-their-project.html) for the story behind it.
 
 ## Installation
 

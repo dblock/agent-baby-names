@@ -18,4 +18,5 @@
 - [#16](https://github.com/dblock/agent-baby-names/pull/16): Install from the `dblock` marketplace in dblock/agent-marketplace as `agent-baby-names@dblock`, and drop the repository's own marketplace - [@dblock](https://github.com/dblock).
 - [#17](https://github.com/dblock/agent-baby-names/pull/17): Add a logo - [@dblock](https://github.com/dblock).
 - [#18](https://github.com/dblock/agent-baby-names/pull/18): Cancel superseded CI runs on pull requests - [@dblock](https://github.com/dblock).
+- [#19](https://github.com/dblock/agent-baby-names/pull/19): Link the introductory blog post from the README - [@dblock](https://github.com/dblock).
 - Your contribution here.
