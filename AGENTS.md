@@ -36,7 +36,7 @@ npm run lint
 npm run package
 ```
 
-Keep line coverage of the scripts close to complete; measure it with `npm run coverage`, which needs Docker.
+Keep line coverage of the scripts close to complete; measure it with `npm run coverage`, which needs Docker. Put code that runs only in Git Bash in an `if [[ "$OSTYPE" == msys* ...` block, which `npm run coverage:windows` checks in the Windows test job.
 
 ## Conventions
 
