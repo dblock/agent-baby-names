@@ -1,0 +1,31 @@
+{
+  "name": "agent-baby-names",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Names each new Claude Code and GitHub Copilot CLI session after the project it works on.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "bats test",
+    "lint": "npm run lint:markdown && npm run lint:shell",
+    "lint:markdown": "eslint .",
+    "lint:shell": "shellcheck bin/agent-baby-names test/*.bats",
+    "package": "claude plugin validate . && claude plugin validate .claude-plugin/marketplace.json"
+  },
+  "engines": {
+    "node": "^22.13.0 || >=24.0.0"
+  },
+  "devDependencies": {
+    "@cspell/dict-en_us": "^4.4.43",
+    "@cspell/dict-software-terms": "^5.4.11",
+    "@eslint/markdown": "^8.0.3",
+    "bats": "^1.13.0",
+    "eslint": "^10.16.0",
+    "eslint-plugin-markdown-links": "^0.9.1",
+    "eslint-plugin-markdown-links-unlinked": "^0.1.0",
+    "eslint-plugin-markdown-preferences": "^0.43.0",
+    "eslint-plugin-markdown-preferences-paragraph": "^0.3.0",
+    "eslint-plugin-prose-spellcheck": "^0.2.0",
+    "shellcheck": "^4.1.0"
+  }
+}

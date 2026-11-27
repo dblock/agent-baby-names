@@ -1,0 +1,21 @@
+name: Package
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Plugin
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check Out
+        uses: actions/checkout@v7.0.1
+      - name: Install Claude Code
+        run: npm install --global @anthropic-ai/claude-code
+      - name: Validate Manifests
+        run: npm run package

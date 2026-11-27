@@ -1,0 +1,10 @@
+{
+  "name": "agent-baby-names",
+  "version": "0.1.0",
+  "description": "Names each new GitHub Copilot CLI session after the project it works on.",
+  "author": { "name": "Daniel (dB.) Doubrovkine", "url": "https://github.com/dblock" },
+  "homepage": "https://github.com/dblock/agent-baby-names",
+  "repository": "https://github.com/dblock/agent-baby-names",
+  "license": "MIT",
+  "keywords": ["session", "name", "title", "hooks"]
+}
