@@ -32,6 +32,8 @@ Start a session and send a prompt. The first prompt of a session without a name 
 
 With the default `repo` strategy, a session is named after the Git repository it runs in, such as `hello-world` for a session in `~/source/hello-world/master`. Combine other strategies for names such as `👋 hello-world` or `🔊 loud-laptop-fan` that a model helps choose.
 
+### Examples
+
 <https://github.com/user-attachments/assets/a650ddbc-4070-443d-9946-073782ed6852>
 
 <sub>Claude Code with `["git-clone", "topic", "emoji"]`: each prompt names a checkout, which becomes the session's name with an emoji.</sub>
