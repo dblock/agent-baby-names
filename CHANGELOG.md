@@ -13,4 +13,5 @@
 - [#11](https://github.com/dblock/agent-baby-names/pull/11): Put examples last in each strategy's documentation - [@dblock](https://github.com/dblock).
 - [#12](https://github.com/dblock/agent-baby-names/pull/12): Add a `position` option to the `emoji` strategy to put the emoji before or after the name - [@dblock](https://github.com/dblock).
 - [#13](https://github.com/dblock/agent-baby-names/pull/13): Replace the `claude_model` and `copilot_model` options with a nested `model` option keyed by host - [@dblock](https://github.com/dblock).
+- [#14](https://github.com/dblock/agent-baby-names/pull/14): Add an Examples heading above the demo videos in the README - [@dblock](https://github.com/dblock).
 - Your contribution here.
