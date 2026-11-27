@@ -11,4 +11,5 @@
 - [#9](https://github.com/dblock/agent-baby-names/pull/9): Show demo videos of Claude Code and Copilot CLI in the README - [@dblock](https://github.com/dblock).
 - [#10](https://github.com/dblock/agent-baby-names/pull/10): Rename the `git-clones` and `github-repos` strategies to `git-clone` and `github-repo` - [@dblock](https://github.com/dblock).
 - [#11](https://github.com/dblock/agent-baby-names/pull/11): Put examples last in each strategy's documentation - [@dblock](https://github.com/dblock).
+- [#12](https://github.com/dblock/agent-baby-names/pull/12): Add a `position` option to the `emoji` strategy to put the emoji before or after the name - [@dblock](https://github.com/dblock).
 - Your contribution here.
