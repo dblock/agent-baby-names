@@ -106,16 +106,23 @@ copilot() {
 }
 
 @test "the Claude Code hook registration runs the Claude Code hook" {
-  command="$(jq -r '.hooks.UserPromptSubmit[0].hooks[0].command' "$root/hooks/hooks.json")"
+  command="$(jq -r '.hooks.UserPromptSubmit[0].hooks[0].command' <"$root/hooks/hooks.json")"
   # shellcheck disable=SC2016 # The registration names the variable literally.
   [ "$command" = '"${CLAUDE_PLUGIN_ROOT}/hosts/claude/hook.sh"' ]
   out="$(NAME='🍼 baby' CLAUDE_PLUGIN_ROOT="$root" bash -c "$command" <<<'{"prompt": "x", "cwd": "/"}')"
   [ "$(jq -r .hookSpecificOutput.sessionTitle <<<"$out")" = "🍼 baby" ]
 }
 
+@test "Claude Code: runs from a Windows path in Git Bash" {
+  [[ "$OSTYPE" == msys* || "$OSTYPE" == cygwin* ]] || skip "Only Git Bash on Windows has C:\\ paths."
+  out="$(NAME='🍼 baby' bash "$(cygpath -w "$claude_hook")" <<<'{"prompt": "x", "cwd": "C:\\work"}')"
+  [ "$(jq -r .hookSpecificOutput.sessionTitle <<<"$out")" = "🍼 baby" ]
+  grep -qF '"cwd":"/c/work"' "$STUB_LOG"
+}
+
 @test "the Copilot CLI hook registration runs the Copilot CLI hook" {
-  file="$root/$(jq -r .hooks "$root/.github/plugin/plugin.json")"
-  hook="$(jq -c '.hooks.userPromptSubmitted[0]' "$file")"
+  file="$root/$(jq -r .hooks <"$root/.github/plugin/plugin.json")"
+  hook="$(jq -c '.hooks.userPromptSubmitted[0]' <"$file")"
   # shellcheck disable=SC2016 # The registration names the variable literally.
   [ "$(jq -r '.env.AGENT_BABY_NAMES_PLUGIN_ROOT' <<<"$hook")" = '${PLUGIN_ROOT}' ]
   out="$(NAME='🍼 baby' AGENT_BABY_NAMES_PLUGIN_ROOT="$root" bash -c "$(jq -r .bash <<<"$hook")" \

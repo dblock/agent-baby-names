@@ -1,5 +1,8 @@
 CLI
+CONV
+EXCL
 Node.js
+WSL
 awk
 babynames
 dblock

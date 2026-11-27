@@ -8,7 +8,7 @@ A plugin for Claude Code and GitHub Copilot CLI that names each new session afte
 
 ## Installation
 
-The plugin needs Bash and [jq](https://jqlang.org/). It is listed in the [dblock marketplace](https://github.com/dblock/agent-marketplace), which you add once.
+The plugin needs Bash and [jq](https://jqlang.org/). On Windows it runs in Git Bash, which comes with [Git for Windows](https://gitforwindows.org/), and jq installs with `winget install jqlang.jq`; GitHub Copilot CLI runs hooks with the first `bash` on `PATH`, so set `COPILOT_BASH_PATH` to Git Bash's `bash.exe` if the WSL `bash` comes first. It is listed in the [dblock marketplace](https://github.com/dblock/agent-marketplace), which you add once.
 
 ### Claude Code
 

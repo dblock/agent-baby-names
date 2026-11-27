@@ -36,6 +36,6 @@ Tests live in `test/` and run with Bats against the real scripts in subprocesses
 - Update your own PR branches with `git push --force-with-lease`; never force-push `master`.
 - Update the documentation the change affects and add a line under the Next section of the changelog for features, improvements, and fixes, in the form ``- [#123](https://github.com/dblock/agent-baby-names/pull/123): Description - [@login](https://github.com/login).``
 - Use Title Case for Markdown headings and for workflow, job, and step names, and keep Markdown paragraphs on one line.
-- Keep `Test` (Bats on Ubuntu and macOS), `Lint`, and `Package` as separate workflows, with explicit `matrix.entry` combinations, least-privilege permissions, and a `concurrency` group that cancels a pull request's superseded runs but never `master`'s.
+- Keep `Test` (Bats on Ubuntu, macOS, and Windows in Git Bash), `Lint`, and `Package` as separate workflows, with explicit `matrix.entry` combinations, least-privilege permissions, and a `concurrency` group that cancels a pull request's superseded runs but never `master`'s.
 
 See [RELEASING](RELEASING.md) for releases.

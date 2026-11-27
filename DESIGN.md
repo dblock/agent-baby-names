@@ -38,6 +38,10 @@ Claude Code passes `session_title` in the hook input, so its adapter names a ses
 
 Each host finds its hook through the plugin root. Claude Code expands `${CLAUDE_PLUGIN_ROOT}` in the hook command. Copilot CLI runs hooks in the plugin root but expands `${PLUGIN_ROOT}` only in a hook's `env`, so the registration maps it to `AGENT_BABY_NAMES_PLUGIN_ROOT`. Copilot CLI loads plugin hooks only in trusted folders. Both hosts read that marketplace and install the plugin from this repository's default branch.
 
+## Windows
+
+On Windows both hosts run the hooks in Git Bash, so the same scripts run there. Four differences are handled where they enter: a Windows checkout keeps LF line endings through `.gitattributes`; the hooks and the folder in the input may be paths such as `C:\work\project`, which `cygpath -u` turns into `/c/work/project` before anything takes them apart; Git Bash turns arguments that look like paths, such as `/work`, into Windows paths when it runs a native program, which Git needs for its folders but which would change the strings given to `jq.exe` and `copilot.exe`, so those run with `MSYS2_ARG_CONV_EXCL=*` and jq reads files on standard input; and a native `jq.exe` ends lines with CRLF, so `bin/agent-baby-names` runs jq with `--binary` and exports that function to the strategies. A custom strategy that is not a Bash script calls jq itself and must handle CRLF.
+
 ## Failure
 
 A hook never fails a prompt. The core reports configuration and strategy errors on standard error with a non-zero status, so they show when it runs by hand, and the adapters discard them, print nothing, and exit 0.

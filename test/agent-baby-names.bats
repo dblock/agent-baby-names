@@ -46,8 +46,8 @@ STRATEGY
 
 @test "the manifests and the script share one version" {
   version="$("$bin" --version | cut -d' ' -f2)"
-  [ "$(jq -r .version "$root/.claude-plugin/plugin.json")" = "$version" ]
-  [ "$(jq -r .version "$root/.github/plugin/plugin.json")" = "$version" ]
+  [ "$(jq -r .version <"$root/.claude-plugin/plugin.json")" = "$version" ]
+  [ "$(jq -r .version <"$root/.github/plugin/plugin.json")" = "$version" ]
 }
 
 @test "the committed logo matches its generator" {
@@ -100,6 +100,19 @@ STRATEGY
   run "$bin" < <(input "name this project" "$HOME/source/babynames/master")
   [ "$status" -eq 0 ]
   [ "$output" = "babynames" ]
+}
+
+@test "passes strategies the Git Bash form of a Windows folder" {
+  # Like cygpath in Git for Windows: C:\work\my-folder is /c/work/my-folder.
+  script "$tmp/stubs/cygpath" <<'STUB'
+#!/bin/bash
+path="${2//\\//}"
+[[ "$path" =~ ^([A-Za-z]):(.*)$ ]] && path="/$(tr '[:upper:]' '[:lower:]' <<<"${BASH_REMATCH[1]}")${BASH_REMATCH[2]}"
+echo "$path"
+STUB
+  config '{"strategy": "directory"}'
+  run "$bin" < <(input x 'C:\work\my-folder')
+  [ "$output" = "my-folder" ]
 }
 
 @test "reads the configuration from the XDG config folder" {
@@ -238,6 +251,7 @@ STRATEGY
 }
 
 @test "fails without jq" {
+  [[ "$OSTYPE" != msys* && "$OSTYPE" != cygwin* ]] || skip "Git Bash copies programs instead of linking them."
   mkdir -p "$tmp/nojq"
   ln -s "$(command -v bash)" "$tmp/nojq/bash"
   for tool in dirname readlink; do ln -s "$(command -v "$tool")" "$tmp/nojq/$tool"; done

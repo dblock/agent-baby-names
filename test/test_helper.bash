@@ -4,6 +4,13 @@
 
 bats_require_minimum_version 1.5.0
 
+# Like bin/agent-baby-names in Git Bash on Windows: a native jq.exe gets arguments such as /work unchanged, ends lines
+# with LF, and so reads files on standard input.
+if [[ "$OSTYPE" == msys* || "$OSTYPE" == cygwin* ]]; then
+  jq() { MSYS2_ARG_CONV_EXCL="*" command jq -b "$@"; }
+  export -f jq
+fi
+
 common_setup() {
   root="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   bin="$root/bin/agent-baby-names"
