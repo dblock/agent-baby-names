@@ -8,9 +8,10 @@ dictionaries: [en_us, softwareTerms, bash, project]
 files:
   - bin/agent-baby-names
   - lib/ask
+  - lib/repos
+  - lib/emojis.txt
   - hosts/*/hook.sh
   - strategies/*/strategy.sh
-  - strategies/*/emojis.txt
   - scripts/*.sh
   - test/*.bats
   - test/test_helper.bash
@@ -18,5 +19,5 @@ languageSettings:
   - languageId: shellscript
     dictionaries: [bash]
 overrides:
-  - filename: ["bin/agent-baby-names", "lib/ask", "**/*.bats", "**/*.bash"]
+  - filename: ["bin/agent-baby-names", "lib/ask", "lib/repos", "**/*.bats", "**/*.bash"]
     languageId: shellscript

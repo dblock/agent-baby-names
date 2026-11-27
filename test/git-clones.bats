@@ -5,11 +5,17 @@ source "$BATS_TEST_DIRNAME/test_helper.bash"
 
 setup() {
   common_setup
-  strategy="$root/strategies/project-emoji/strategy.sh"
+  strategy="$root/strategies/git-clones/strategy.sh"
   src="$tmp/source"
-  mkdir -p "$src/testlanes/master/.git" "$src/testlanes/implementation/.git" "$src/excalc/.git" \
-    "$src/excalc-rs/.git" "$src/mongoid/mongoid_fulltext/upstream-mongoid_fulltext/.git" \
-    "$src/mongoid/mongoid_orderable/.git" "$src/g/.git"
+  clone "$src/testlanes/master" git@github.com:dblock/testlanes.git
+  git -C "$src/testlanes/master" -c user.name=Test -c user.email=test@example.com commit -q --allow-empty -m Start
+  git -C "$src/testlanes/master" worktree add -q -b topic "$src/testlanes/implementation"
+  clone "$src/testlanes/dblock-testlanes" https://github.com/dblock/testlanes
+  clone "$src/excalc"
+  clone "$src/excalc-rs" https://github.com/dblock/excalc-rs.git
+  clone "$src/mongoid/mongoid_fulltext/upstream-mongoid_fulltext" https://github.com/mongoid/mongoid_fulltext.git
+  clone "$src/mongoid/mongoid_orderable" https://github.com/mongoid/mongoid_orderable.git
+  clone "$src/g"
   printf 'testlanes 🧪\n' >"$tmp/pins.txt"
   # A fake model that records each question, answering emoji questions with 🦀 and title requests with a title.
   script "$tmp/ask" <<'ASK'
@@ -34,36 +40,63 @@ asked() {
   grep -c "${1:-}" "$STUB_LOG" | tr -d ' '
 }
 
-@test "a pinned project in the prompt" {
+@test "lists each checkout once, named after its remote" {
+  name "" >/dev/null
+  [ "$(cat "$tmp/strategy-cache/git-clones.txt")" = "$(printf '%s\n' excalc excalc-rs g mongoid_fulltext \
+    mongoid_orderable testlanes)" ]
+}
+
+@test "a pinned checkout in the prompt" {
   [ "$(name "let's improve TestLanes.")" = "🧪 testlanes" ]
   [ "$(asked)" = 0 ]
 }
 
-@test "the longest matching project" {
+@test "the longest matching checkout" {
   [ "$(name "port excalc to excalc-rs")" = "🦀 excalc-rs" ]
 }
 
-@test "an organization subfolder, hyphenated" {
+@test "a checkout in an organization folder, hyphenated" {
   [ "$(name "fix mongoid_fulltext search")" = "🦀 mongoid-fulltext" ]
 }
 
-@test "checkouts in a repository container are not projects" {
+@test "folder names of checkouts with a remote are not repositories" {
   [ "$(name "work on implementation")" = "🔊 loud-laptop-fan" ]
+  [ "$(name "merge upstream-mongoid_fulltext")" = "🔊 loud-laptop-fan" ]
+}
+
+@test "an upstream remote names a checkout without an origin" {
+  clone "$src/renamed"
+  git -C "$src/renamed" remote add upstream https://github.com/dblock/real-name/
+  [ "$(name "fix real-name")" = "🦀 real-name" ]
+}
+
+@test "checkouts deeper than three folders or inside a checkout are not listed" {
+  clone "$src/a/b/c/deep"
+  clone "$src/excalc/vendor/inner"
+  name "" >/dev/null
+  run ! grep -qxE 'deep|inner' "$tmp/strategy-cache/git-clones.txt"
 }
 
 @test "names shorter than three characters are ignored" {
   [ "$(name "g is great")" = "🔊 loud-laptop-fan" ]
 }
 
-@test "the project that holds the working directory" {
-  [ "$(name "fix the build" "$src/testlanes/master/lib")" = "🧪 testlanes" ]
+@test "the checkout that holds the working directory" {
+  mkdir -p "$src/testlanes/implementation/lib"
+  [ "$(name "fix the build" "$src/testlanes/implementation/lib")" = "🧪 testlanes" ]
 }
 
-@test "the working directory in an organization" {
-  [ "$(name "fix the build" "$src/mongoid/mongoid_orderable")" = "🦀 mongoid-orderable" ]
+@test "a working directory checkout outside the root" {
+  clone "$tmp/elsewhere" git@github.com:someone/elsewhere.git
+  [ "$(name "fix the build" "$tmp/elsewhere")" = "🦀 elsewhere" ]
 }
 
-@test "a prompt project wins over the working directory" {
+@test "a working directory that is missing or outside a checkout gets a topic" {
+  [ "$(name "fix the build" "$tmp/missing")" = "🔊 loud-laptop-fan" ]
+  [ "$(name "fix the build" "")" = "🔊 loud-laptop-fan" ]
+}
+
+@test "a prompt repository wins over the working directory" {
   [ "$(name "update excalc" "$src/testlanes/master")" = "🦀 excalc" ]
 }
 
@@ -93,20 +126,20 @@ asked() {
   grep -qF "\"$(printf 'a%.0s' {1..1000})\"." "$STUB_LOG"
 }
 
-@test "the project cache is rebuilt when the root changes" {
+@test "the list is rebuilt when the root changes" {
   name "update excalc" >/dev/null
-  touch -t 202001010000 "$tmp/strategy-cache/projects.txt"
-  mkdir -p "$src/newproject/.git"
+  touch -t 202001010000 "$tmp/strategy-cache/git-clones.txt"
+  clone "$src/newproject"
   [ "$(name "start newproject")" = "🦀 newproject" ]
 }
 
-@test "the project cache is rebuilt after a day" {
+@test "the list is rebuilt after a day" {
   name "update excalc" >/dev/null
-  mkdir -p "$src/later/.git"
+  clone "$src/later"
   touch -t 202001010000 "$src"
   [ "$(name "start later")" = "🔊 loud-laptop-fan" ]
   touch -t 202001010000 "$src"
-  touch -t "$(date -v-2d +%Y%m%d%H%M 2>/dev/null || date -d '2 days ago' +%Y%m%d%H%M)" "$tmp/strategy-cache/projects.txt"
+  touch -t "$(date -v-2d +%Y%m%d%H%M 2>/dev/null || date -d '2 days ago' +%Y%m%d%H%M)" "$tmp/strategy-cache/git-clones.txt"
   [ "$(name "start later")" = "🦀 later" ]
 }
 
@@ -127,7 +160,7 @@ asked() {
   [ "$(TITLE="🔊 !!!" name "why is it loud")" = "" ]
 }
 
-@test "an empty prompt outside a project names nothing" {
+@test "an empty prompt outside a checkout names nothing" {
   [ "$(name "")" = "" ]
   [ "$(asked)" = 0 ]
 }
@@ -140,21 +173,21 @@ asked() {
 }
 
 @test "the bundled pins apply without a pins option" {
-  mkdir -p "$src/dotfiles/.git"
+  clone "$src/dotfiles" git@github.com:dblock/dotfiles.git
   [ "$(name "fix dotfiles" / "$(jq -c 'del(.pins)' <<<"$options")")" = "🏠 dotfiles" ]
 }
 
 @test "defaults to ~/source and the XDG cache" {
-  mkdir -p "$HOME/source/babynames/.git"
+  clone "$HOME/source/babynames"
   [ "$(name "name babynames" / "{\"ask\": \"$tmp/ask\"}")" = "🦀 babynames" ]
   grep -qxF "babynames 🦀" "$XDG_CACHE_HOME/agent-baby-names/emojis.txt"
 }
 
 @test "expands ~ in folder options" {
-  mkdir -p "$HOME/code/babynames/.git"
+  clone "$HOME/code/babynames"
   tilde="$(jq -cn --arg ask "$tmp/ask" '{root: "~/code/", cache: "~/cache", ask: $ask}')"
   [ "$(name "name babynames" / "$tilde")" = "🦀 babynames" ]
-  [ -s "$HOME/cache/projects.txt" ]
+  [ -s "$HOME/cache/git-clones.txt" ]
 }
 
 @test "a missing root names only from the model" {
