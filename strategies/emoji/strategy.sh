@@ -1,9 +1,10 @@
 #!/bin/bash
-# Puts an emoji before the name so far, such as "🧪 hello-world". The emoji comes from the pins file, else the cache,
+# Puts an emoji before the name so far, such as "🧪 hello-world", or after it. The emoji comes from the pins file, else the cache,
 # else the model, whose pick is cached. Without a name it names nothing.
 #
 # Options, all optional, besides those in lib/strategy:
-#   pins  a file of "<name> <emoji>" lines that override cached emojis (default emojis.txt next to this file)
+#   pins      a file of "<name> <emoji>" lines that override cached emojis (default emojis.txt next to this file)
+#   position  left to put the emoji before the name (default), or right to put it after
 set -uo pipefail
 
 dir="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
@@ -32,4 +33,8 @@ if [[ -z "$emoji" ]]; then
   [[ -n "$key" ]] && valid_emoji "$emoji" && echo "$key $emoji" >>"$emojis_cache"
 fi
 valid_emoji "$emoji" || emoji="💬"
-echo "$emoji $name"
+if [[ "$(option position left)" == right ]]; then
+  echo "$name $emoji"
+else
+  echo "$emoji $name"
+fi

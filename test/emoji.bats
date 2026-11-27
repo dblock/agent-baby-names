@@ -59,6 +59,15 @@ asked() {
   [ "$(name gizmo "$(jq -c '.ask = "none"' <<<"$options")")" = "💬 gizmo" ]
 }
 
+@test "position right puts the emoji after the name" {
+  [ "$(name hello-world "$(jq -c '.position = "right"' <<<"$options")")" = "hello-world 🧪" ]
+}
+
+@test "position left, or an unknown position, puts the emoji before the name" {
+  [ "$(name hello-world "$(jq -c '.position = "left"' <<<"$options")")" = "🧪 hello-world" ]
+  [ "$(name hello-world "$(jq -c '.position = "middle"' <<<"$options")")" = "🧪 hello-world" ]
+}
+
 @test "the bundled pins and the XDG cache apply by default" {
   [ "$(name dotfiles "{\"ask\": \"$tmp/ask\"}")" = "🏠 dotfiles" ]
   [ "$(name gizmo "{\"ask\": \"$tmp/ask\"}")" = "🦀 gizmo" ]
