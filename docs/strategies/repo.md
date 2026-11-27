@@ -1,6 +1,6 @@
 # Repo
 
-`repo`, the default strategy, names a session after the Git repository it runs in, such as `hello-world` for a session in `~/source/hello-world/master/lib`. It asks no model, keeps no cache, and has no options.
+`repo` names a session after the Git repository it runs in, such as `hello-world` for a session in `~/source/hello-world/master/lib`. It asks no model, keeps no cache, and has no options.
 
 ```json
 {

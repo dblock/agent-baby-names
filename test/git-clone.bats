@@ -105,9 +105,16 @@ name() {
   [ "$(name "start later")" = "later" ]
 }
 
-@test "defaults to ~/source and the XDG cache" {
-  clone "$HOME/source/babynames"
-  [ "$(name "name babynames" / "{}")" = "babynames" ]
+@test "without a root, names the working directory checkout and keeps no list" {
+  clone "$HOME/source/babynames" https://github.com/octocat/babynames.git
+  [ "$(name "name babynames" / "{}")" = "" ]
+  [ "$(name "fix the build" "$HOME/source/babynames" "{}")" = "babynames" ]
+  [ ! -e "$XDG_CACHE_HOME/agent-baby-names/git-clone.txt" ]
+}
+
+@test "uses the XDG cache by default" {
+  clone "$HOME/code/babynames"
+  [ "$(name "name babynames" / '{"root": "~/code"}')" = "babynames" ]
   [ -s "$XDG_CACHE_HOME/agent-baby-names/git-clone.txt" ]
 }
 

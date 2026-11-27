@@ -1,18 +1,18 @@
 #!/bin/bash
 # Names a session after a Git checkout under the root folder that the prompt mentions, else the checkout that holds the
-# working directory; see lib/repos. A checkout is named after its origin, else upstream, remote, so ~/source/foo/master
+# working directory; see lib/repos. Without a root, only the working directory's checkout counts. A checkout is named after its origin, else upstream, remote, so ~/source/foo/master
 # and a fork checkout in ~/source/foo/octocat-foo are both foo. Checkouts are found up to three folders deep, without
 # looking inside a checkout. The list is cached and rebuilt when the root folder changes or after a day.
 #
 # Options, all optional, besides the cache option in lib/strategy:
-#   root  where checkouts live (default ~/source)
+#   root  where checkouts live (default none)
 set -uo pipefail
 
 dir="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 # shellcheck source=lib/repos
 source "$dir/../../lib/repos"
 
-root="$(option root "$HOME/source" path)"
+root="$(option root "" path)"
 root="${root%/}"
 
 # The checkouts in a folder, down to the given depth.
@@ -38,4 +38,4 @@ list_stale() {
   [[ "$root" -nt "$1" ]]
 }
 
-name_session git-clone.txt
+name_session "${root:+git-clone.txt}"

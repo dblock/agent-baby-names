@@ -6,7 +6,7 @@ Agent Baby Names is a plugin for Claude Code and GitHub Copilot CLI that names a
 
 - **Host adapters** (`hosts/claude`, `hosts/copilot`) are the hooks each host runs. They read the host's hook input, leave sessions that already have a name alone, ask the core for a name, and reply in the host's format.
 - **The core** (`bin/agent-baby-names`) reads the configuration, checks every configured strategy, runs them in order, and prints the name they leave.
-- **Strategies** (`strategies/<name>`) decide the name. A strategy is any executable that reads `{"prompt", "cwd", "host", "name"}` JSON on standard input, where `name` is the name so far, receives its own options as JSON in `AGENT_BABY_NAMES_OPTIONS`, and prints a new name, or nothing to keep the name so far. `repo`, the default, uses the name of the Git repository the session runs in, with no model, cache, or options, so a new install works anywhere without sending prompts to a model. `git-clone` and `github-repo` find a repository that the prompt mentions and share `lib/repos`; `topic` asks a model for a topic; `prompt` asks a model a question that the user writes as a template; `emoji` puts an emoji before the name; `directory` is a minimal example that uses the folder name. The bundled strategies that read options source `lib/strategy`.
+- **Strategies** (`strategies/<name>`) decide the name. A strategy is any executable that reads `{"prompt", "cwd", "host", "name"}` JSON on standard input, where `name` is the name so far, receives its own options as JSON in `AGENT_BABY_NAMES_OPTIONS`, and prints a new name, or nothing to keep the name so far. `repo` uses the name of the Git repository the session runs in, with no model, cache, or options. `git-clone` and `github-repo` find a repository that the prompt mentions and share `lib/repos`; `topic` asks a model for a topic; `prompt` asks a model a question that the user writes as a template; `emoji` puts an emoji before the name; `directory` is a minimal example that uses the folder name. The bundled strategies that read options source `lib/strategy`.
 
 ## Combining Strategies
 
@@ -14,7 +14,7 @@ Agent Baby Names is a plugin for Claude Code and GitHub Copilot CLI that names a
 
 ## Configuration
 
-Configuration lives in `~/.config/agent-baby-names/config.json`, under `XDG_CONFIG_HOME` when it is set, and `AGENT_BABY_NAMES_CONFIG` points to another file. A missing file means defaults. It is a file rather than environment variables because Claude Code sessions dispatched from its agent view do not inherit the shell environment.
+Configuration lives in `~/.config/agent-baby-names/config.json`, under `XDG_CONFIG_HOME` when it is set, and `AGENT_BABY_NAMES_CONFIG` points to another file. A missing file means defaults, and the default strategy is `["topic", "emoji"]`, so a new install names each session after its own task, such as `🔊 loud-laptop-fan`, rather than giving every session in a repository the same name. `git-clone` has no default `root`, because where checkouts live differs from person to person. Topics and emojis come from the host's own small model, so the first prompt of a session goes to that model; `repo` names sessions without asking one. It is a file rather than environment variables because Claude Code sessions dispatched from its agent view do not inherit the shell environment.
 
 ```json
 {

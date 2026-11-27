@@ -61,10 +61,11 @@ repo_in_cwd() {
 }
 
 # Prints the repository's name, given the name of the strategy's cache file, unless the session already has a name.
+# Without a cache file name, there is no list, and only the working directory's checkout counts.
 name_session() {
-  local repo
+  local repo=""
   [[ -z "$name" ]] || return 0
-  repo="$(repos "$1" | repo_in_prompt)"
+  [[ -z "$1" ]] || repo="$(repos "$1" | repo_in_prompt)"
   [[ -z "$repo" ]] && repo="$(repo_in_cwd)"
   slug "$repo"
 }

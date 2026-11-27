@@ -96,11 +96,21 @@ STRATEGY
   [ "$stderr" = "agent-baby-names: Strategy \"$tmp/record.sh\" failed with status 3." ]
 }
 
-@test "uses repo without a configuration file" {
+@test "uses topic and emoji without a configuration file" {
+  script "$tmp/stubs/claude" <<'STUB'
+#!/bin/bash
+question="$(cat)"
+echo "$question" >>"$STUB_LOG"
+case "$question" in
+  *emoji*) echo "🍼" ;;
+  *) echo "loud-fan" ;;
+esac
+STUB
   clone "$HOME/source/babynames/master" https://github.com/octocat/babynames.git
-  run "$bin" < <(input "name this project" "$HOME/source/babynames/master")
+  run "$bin" --host claude < <(input "why is my laptop loud" "$HOME/source/babynames/master")
   [ "$status" -eq 0 ]
-  [ "$output" = "babynames" ]
+  [ "$output" = "🍼 loud-fan" ]
+  grep -qF 'why is my laptop loud' "$STUB_LOG"
 }
 
 @test "passes strategies the Git Bash form of a Windows folder" {

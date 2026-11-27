@@ -2,6 +2,7 @@
 
 ## 0.1.1 (Next)
 
+- [#22](https://github.com/dblock/agent-baby-names/pull/22): Make `["topic", "emoji"]` the default strategy, and remove `git-clone`'s default `root` - [@dblock](https://github.com/dblock).
 - Your contribution here.
 
 ## 0.1.0 (2026/11/27)
