@@ -4,6 +4,7 @@ awk
 babynames
 dblock
 getpath
+gsub
 kcov
 mcps
 mmin
