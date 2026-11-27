@@ -24,3 +24,6 @@ jobs:
         run: npm ci
       - name: Run Lint
         run: npm run lint
+        env:
+          # The shellcheck package downloads its binary from GitHub, which rate-limits anonymous requests.
+          GITHUB_TOKEN: ${{ github.token }}

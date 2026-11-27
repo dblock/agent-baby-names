@@ -27,6 +27,20 @@ Configuration lives in `~/.config/agent-baby-names/config.json`, under `XDG_CONF
 
 Claude Code reads `.claude-plugin/plugin.json`, and `.claude-plugin/marketplace.json` makes the repository its own one-plugin marketplace. GitHub Copilot CLI reads `.github/plugin/plugin.json`, which it finds before `.claude-plugin/plugin.json`, so each host gets its own hook format.
 
-## Status
+## Hosts
 
-This is the scaffold: the manifests, the core's `--version` and `--help`, tests, and lint. The adapters, strategies, and configuration above are not implemented yet.
+Claude Code passes `session_title` in the hook input, so its adapter names a session only while that is empty, and replies with `sessionTitle`. Copilot CLI passes no name and its hooks cannot set one, so its adapter remembers each session ID it has seen in `~/.copilot/agent-baby-names/sessions`, forgetting them after 90 days, and on a session's first prompt replies with `additionalContext` asking the agent to call `rename_session`.
+
+Each host finds its hook through the plugin root. Claude Code expands `${CLAUDE_PLUGIN_ROOT}` in the hook command. Copilot CLI runs hooks in the plugin root but expands `${PLUGIN_ROOT}` only in a hook's `env`, so the registration maps it to `AGENT_BABY_NAMES_PLUGIN_ROOT`. Copilot CLI loads plugin hooks only in trusted folders. Both hosts read the marketplace in `.claude-plugin/marketplace.json`.
+
+## Failure
+
+A hook never fails a prompt. The core reports configuration and strategy errors on standard error with a non-zero status, so they show when it runs by hand, and the adapters discard them, print nothing, and exit 0.
+
+## Asking a Model
+
+`lib/ask` asks the host's small model in a subprocess: `claude -p` with hooks, tools, and session saving turned off, or `copilot -p` in a throwaway `COPILOT_HOME` with no tools. It runs in the cache folder with `AGENT_BABY_NAMES_NESTED` set, and the core names nothing while that is set, so the nested session never names itself or recurses.
+
+## Project Emoji
+
+`project-emoji` caches the project list and rebuilds it when the root folder changes or after a day, so most prompts make no model call. A project's emoji is asked once and cached; pins override the cache. Folders such as `master`, `main`, or `<login>-<repo>` inside a repository folder are checkouts, not projects.

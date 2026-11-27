@@ -1,0 +1,49 @@
+#!/bin/bash
+# Answers the question on standard input with one line from a model, for strategies. The argument is the ask setting:
+# "auto" asks the small model of the host in AGENT_BABY_NAMES_HOST, "none" answers nothing, and anything else is a
+# shell command that reads the question on standard input. It fails when there is no answer.
+#
+# The model runs in a cache directory with AGENT_BABY_NAMES_NESTED set, so if it runs this host's hooks they name nothing.
+set -uo pipefail
+
+setting="${1:-auto}"
+cache="${AGENT_BABY_NAMES_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/agent-baby-names}"
+question="$(cat)"
+
+ask_claude() {
+  claude -p --model "${AGENT_BABY_NAMES_CLAUDE_MODEL:-haiku}" --no-session-persistence \
+    --settings '{"disableAllHooks":true}' --tools "" <<<"$question"
+}
+
+# A throwaway Copilot home loads no hooks, instructions, or MCP servers and saves no session; sign-in comes from
+# the keychain.
+ask_copilot() {
+  local home status
+  home="$(mktemp -d)" || return 1
+  COPILOT_HOME="$home" copilot -p "$question" -s --model "${AGENT_BABY_NAMES_COPILOT_MODEL:-claude-haiku-4.5}" \
+    --available-tools "" --no-custom-instructions --disable-builtin-mcps --no-auto-update </dev/null
+  status=$?
+  rm -rf "$home"
+  return "$status"
+}
+
+ask_command() {
+  bash -c "$setting" <<<"$question"
+}
+
+case "$setting" in
+  none) exit 1 ;;
+  auto)
+    case "${AGENT_BABY_NAMES_HOST:-}" in
+      claude) asker=ask_claude ;;
+      copilot) asker=ask_copilot ;;
+      *) exit 1 ;;
+    esac
+    ;;
+  *) asker=ask_command ;;
+esac
+
+mkdir -p "$cache" && cd "$cache" || exit 1
+answer="$(AGENT_BABY_NAMES_NESTED=1 "$asker" 2>/dev/null | head -1)"
+[[ -n "$answer" ]] || exit 1
+echo "$answer"

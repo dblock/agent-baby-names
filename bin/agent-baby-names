@@ -1,23 +1,74 @@
 #!/bin/bash
-# Names a Claude Code or GitHub Copilot CLI session. Naming is not implemented yet.
-
-set -euo pipefail
+# Prints a name for an agent session from {"prompt", "cwd"} JSON on standard input, using the configured strategy.
+set -uo pipefail
 
 VERSION="0.1.0"
+root="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
 
 usage() {
   cat <<'USAGE'
-Usage: agent-baby-names [--version] [--help]
+Usage: agent-baby-names [--host <host>] < input.json
+       agent-baby-names --version | --help
 
-Names a Claude Code or GitHub Copilot CLI session. Naming is not implemented yet.
+Prints a name for an agent session from {"prompt", "cwd"} JSON on standard input, using the strategy
+configured in ~/.config/agent-baby-names/config.json, or in the file that AGENT_BABY_NAMES_CONFIG names.
+
+Options:
+  --host <host>  The agent that asks, claude or copilot, whose model a strategy may ask.
+  --version      Print the version.
+  --help         Print this help.
 USAGE
 }
 
-case "${1:-}" in
-  --version) echo "agent-baby-names $VERSION" ;;
-  --help | -h) usage ;;
-  *)
-    usage >&2
-    exit 1
-    ;;
+fail() {
+  echo "agent-baby-names: $1" >&2
+  exit 1
+}
+
+host=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --version) echo "agent-baby-names $VERSION" && exit 0 ;;
+    --help | -h) usage && exit 0 ;;
+    --host)
+      [[ $# -ge 2 && -n "$2" ]] || fail "--host needs a value."
+      host="$2"
+      shift 2
+      ;;
+    *) usage >&2 && exit 1 ;;
+  esac
+done
+
+# A model that a strategy asks may run this host's hooks again; never name that inner session.
+[[ -n "${AGENT_BABY_NAMES_NESTED:-}" ]] && exit 0
+
+command -v jq >/dev/null || fail "jq is required."
+
+config_file="${AGENT_BABY_NAMES_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/agent-baby-names/config.json}"
+config="{}"
+if [[ -f "$config_file" ]]; then
+  config="$(jq -ce 'if type == "object" then . else error("not an object") end' "$config_file" 2>/dev/null)" ||
+    fail "$config_file is not a JSON object."
+fi
+
+strategy="$(jq -r '.strategy // "project-emoji" | tostring' <<<"$config")"
+options="$(jq -ce --arg s "$strategy" '(.strategies // {})[$s] // {} | if type == "object" then . else error end' \
+  <<<"$config" 2>/dev/null)" || fail "The options of strategy \"$strategy\" in $config_file must be an object."
+
+case "$strategy" in
+  */*) executable="${strategy/#\~/$HOME}" ;;
+  "" | *[!abcdefghijklmnopqrstuvwxyz0123456789-]*) executable="" ;;
+  *) executable="$root/strategies/$strategy/strategy.sh" ;;
 esac
+[[ -n "$executable" && -f "$executable" && -x "$executable" ]] || fail "Unknown strategy \"$strategy\"."
+
+input="$(jq -ce --arg host "$host" '{prompt: (.prompt // ""), cwd: (.cwd // ""), host: $host}' 2>/dev/null)" ||
+  fail "The input must be a JSON object."
+
+name="$(AGENT_BABY_NAMES_OPTIONS="$options" AGENT_BABY_NAMES_HOST="$host" AGENT_BABY_NAMES_ROOT="$root" \
+  "$executable" <<<"$input")"
+status=$?
+[[ $status -eq 0 ]] || fail "Strategy \"$strategy\" failed with status $status."
+
+name="$(head -1 <<<"$name" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')"
+[[ -z "$name" ]] || echo "$name"

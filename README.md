@@ -6,11 +6,52 @@ A plugin for Claude Code and GitHub Copilot CLI that names each new session afte
 
 ## Installation
 
-The plugin is not implemented yet. Once it is, it installs with one command in GitHub Copilot CLI and two in Claude Code.
+The plugin needs Bash and [jq](https://jqlang.org/). The repository is its own plugin marketplace.
+
+### Claude Code
+
+```sh
+claude plugin marketplace add dblock/agent-baby-names
+claude plugin install agent-baby-names@agent-baby-names
+```
+
+Claude Code 2.1.275 and later can also install it in one step from a session with `/plugin install agent-baby-names --marketplace dblock/agent-baby-names`.
+
+### GitHub Copilot CLI
+
+```sh
+copilot plugin marketplace add dblock/agent-baby-names
+copilot plugin install agent-baby-names@agent-baby-names
+```
+
+Copilot CLI runs plugin hooks only in folders you have trusted.
 
 ## Usage
 
-Naming is not implemented yet.
+Start a session and send a prompt. The first prompt of a session without a name gives it one, and later prompts and sessions you have named yourself are left alone.
+
+With the default `project-emoji` strategy, a session that mentions a project under `~/source`, or runs in one, is named after it, such as `🧪 testlanes` for "speed up the testlanes CI". Other sessions get a short topic, such as `🔊 loud-laptop-fan` for "why is my laptop fan loud". The host's small model picks the emoji and writes the topic.
+
+## Configuration
+
+Configuration is optional and lives in `~/.config/agent-baby-names/config.json`, or under `XDG_CONFIG_HOME` when it is set. Set `AGENT_BABY_NAMES_CONFIG` to use another file.
+
+```json
+{
+  "strategy": "project-emoji",
+  "strategies": {
+    "project-emoji": { "root": "~/code", "ask": "none" }
+  }
+}
+```
+
+`strategy` is the name of a bundled strategy or the path to your own, and `strategies` holds each strategy's options under its name.
+
+### Strategies
+
+- [`project-emoji`](docs/strategies/project-emoji.md), the default, names a session `<emoji> <project>`, or `<emoji> <topic>` outside a project.
+- [`directory`](docs/strategies/directory.md) names a session after the folder it runs in.
+- [Your own strategy](docs/strategies/custom.md) is any executable that prints a name.
 
 ## Contributing
 

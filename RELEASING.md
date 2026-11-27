@@ -1,7 +1,5 @@
 # Releasing
 
-This is provisional until the plugin is implemented.
-
 Plugins install from this repository, so a release is a version bump and a Git tag, not a registry upload. Releasing requires explicit maintainer authorization.
 
 1. Make sure `master` is green and the Next section of the changelog describes the release.

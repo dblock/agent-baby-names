@@ -1,2 +1,6 @@
 CLI
 Node.js
+awk
+dblock
+kcov
+testlanes
