@@ -1,6 +1,6 @@
 # Git Clones
 
-`git-clones`, the default strategy, names a session `<emoji> <repo>` after a Git checkout, such as `🧪 testlanes` for "speed up the testlanes CI", or `<emoji> <topic>` otherwise, such as `🔊 loud-laptop-fan` for "why is my laptop fan loud".
+`git-clones` names a session `<emoji> <repo>` after a Git checkout, such as `🧪 testlanes` for "speed up the testlanes CI", or `<emoji> <topic>` otherwise, such as `🔊 loud-laptop-fan` for "why is my laptop fan loud".
 
 ## Repositories
 
@@ -14,6 +14,7 @@ The host's small model picks a repository's emoji once, and it is remembered in 
 
 ```json
 {
+  "strategy": "git-clones",
   "strategies": {
     "git-clones": { "root": "~/code", "pins": "~/.config/agent-baby-names/emojis.txt" }
   }

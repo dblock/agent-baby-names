@@ -51,7 +51,7 @@ if [[ -f "$config_file" ]]; then
     fail "$config_file is not a JSON object."
 fi
 
-strategy="$(jq -r '.strategy // "git-clones" | tostring' <<<"$config")"
+strategy="$(jq -r '.strategy // "repo" | tostring' <<<"$config")"
 options="$(jq -ce --arg s "$strategy" '(.strategies // {})[$s] // {} | if type == "object" then . else error end' \
   <<<"$config" 2>/dev/null)" || fail "The options of strategy \"$strategy\" in $config_file must be an object."
 

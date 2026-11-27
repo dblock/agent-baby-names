@@ -30,7 +30,7 @@ Copilot CLI runs plugin hooks only in folders you have trusted.
 
 Start a session and send a prompt. The first prompt of a session without a name gives it one, and later prompts and sessions you have named yourself are left alone.
 
-With the default `git-clones` strategy, a session that mentions a repository you have cloned under `~/source`, or runs in a checkout, is named after it, such as `🧪 testlanes` for "speed up the testlanes CI". Other sessions get a short topic, such as `🔊 loud-laptop-fan` for "why is my laptop fan loud". The host's small model picks the emoji and writes the topic.
+With the default `repo` strategy, a session is named after the Git repository it runs in, such as `testlanes` for a session in `~/source/testlanes/master`. Configure another strategy for names such as `🧪 testlanes` or `🔊 loud-laptop-fan` that a model helps choose.
 
 ## Configuration
 
@@ -49,7 +49,8 @@ Configuration is optional and lives in `~/.config/agent-baby-names/config.json`,
 
 ### Strategies
 
-- [`git-clones`](docs/strategies/git-clones.md), the default, names a session `<emoji> <repo>` after a Git checkout, or `<emoji> <topic>` otherwise.
+- [`repo`](docs/strategies/repo.md), the default, names a session after the Git repository it runs in.
+- [`git-clones`](docs/strategies/git-clones.md) names a session `<emoji> <repo>` after a Git checkout, or `<emoji> <topic>` otherwise.
 - [`github-repos`](docs/strategies/github-repos.md) names a session `<emoji> <repo>` after one of your GitHub repositories, or `<emoji> <topic>` otherwise.
 - [`directory`](docs/strategies/directory.md) names a session after the folder it runs in.
 - [Your own strategy](docs/strategies/custom.md) is any executable that prints a name.
