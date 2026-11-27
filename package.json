@@ -4,6 +4,10 @@
   "private": true,
   "description": "Names each new Claude Code and GitHub Copilot CLI session after the project it works on.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dblock/agent-baby-names.git"
+  },
   "type": "module",
   "scripts": {
     "test": "bats test",
@@ -12,6 +16,7 @@
     "lint:shell": "shellcheck -x bin/agent-baby-names lib/ask lib/repos lib/strategy hosts/*/hook.sh strategies/*/strategy.sh scripts/*.sh test/*.bats test/test_helper.bash",
     "lint:spelling": "cspell --no-progress",
     "package": "claude plugin validate .",
+    "build": "scripts/build.sh",
     "coverage": "scripts/coverage.sh"
   },
   "engines": {
@@ -28,6 +33,7 @@
     "eslint-plugin-markdown-links-unlinked": "^0.1.0",
     "eslint-plugin-markdown-preferences": "^0.43.0",
     "eslint-plugin-markdown-preferences-paragraph": "^0.3.0",
-    "eslint-plugin-prose-spellcheck": "^0.2.0"
+    "eslint-plugin-prose-spellcheck": "^0.2.0",
+    "npm-package-release": "0.4.0"
   }
 }

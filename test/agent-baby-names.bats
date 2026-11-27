@@ -22,7 +22,7 @@ STRATEGY
 @test "--version prints the version" {
   run "$bin" --version
   [ "$status" -eq 0 ]
-  [ "$output" = "agent-baby-names 0.1.0" ]
+  [ "$output" = "agent-baby-names $(jq -r .version <"$root/package.json")" ]
 }
 
 @test "--help prints usage" {
@@ -44,8 +44,9 @@ STRATEGY
   [ "$stderr" = "agent-baby-names: --host needs a value." ]
 }
 
-@test "the manifests and the script share one version" {
-  version="$("$bin" --version | cut -d' ' -f2)"
+@test "the package, the manifests, and the script share one version" {
+  version="$(jq -r .version <"$root/package.json")"
+  [ "$("$bin" --version)" = "agent-baby-names $version" ]
   [ "$(jq -r .version <"$root/.claude-plugin/plugin.json")" = "$version" ]
   [ "$(jq -r .version <"$root/.github/plugin/plugin.json")" = "$version" ]
 }

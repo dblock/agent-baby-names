@@ -10,6 +10,7 @@ files:
   - lib/ask
   - lib/repos
   - lib/strategy
+  - npr.config.js
   - hosts/*/hook.sh
   - strategies/*/strategy.sh
   - strategies/emoji/emojis.txt
